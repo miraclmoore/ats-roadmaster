@@ -19,11 +19,11 @@ const sizeConfig = {
 };
 
 const colorConfig = {
-  profit: 'rgb(16, 185, 129)', // Green
-  income: 'rgb(6, 182, 212)',   // Cyan
-  fuel: 'rgb(245, 158, 11)',    // Amber
-  damage: 'rgb(239, 68, 68)',   // Red
-  primary: 'rgb(59, 130, 246)',  // Blue
+  profit: 'rgb(39, 174, 96)', // Freight Green #27AE60
+  income: 'rgb(86, 204, 242)',   // Info Cyan #56CCF2
+  fuel: 'rgb(242, 153, 74)',    // Safety Orange #F2994A
+  damage: 'rgb(235, 87, 87)',   // Brake Red #EB5757
+  primary: 'rgb(47, 128, 237)',  // Highway Blue #2F80ED
 };
 
 export function Gauge({
@@ -83,7 +83,7 @@ export function Gauge({
           <path
             d={`M ${config.stroke / 2} ${config.width / 2} A ${radius} ${radius} 0 0 1 ${config.width - config.stroke / 2} ${config.width / 2}`}
             fill="none"
-            stroke="rgb(61, 68, 77)"
+            stroke="rgb(44, 50, 56)"
             strokeWidth={config.stroke}
             strokeLinecap="round"
           />

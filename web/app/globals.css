@@ -1,43 +1,46 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @layer base {
   :root {
-    /* Industrial Dashboard Theme - Dark by default */
-    --background: 15 20 25; /* Deep charcoal #0f1419 */
-    --foreground: 240 244 248; /* Light text */
+    /* RoadMaster Pro Style Guide - Industrial Dark Palette */
 
-    --card: 37 42 49; /* Surface #252a31 */
-    --card-foreground: 240 244 248;
+    /* Core Industrial Colors */
+    --background: 18 20 23; /* Asphalt Black #121417 */
+    --foreground: 234 236 239; /* Primary Text #EAECEF */
 
-    --popover: 37 42 49;
-    --popover-foreground: 240 244 248;
+    --card: 30 35 41; /* Gunmetal Gray #1E2329 */
+    --card-foreground: 234 236 239;
 
-    --primary: 59 130 246; /* Blue #3b82f6 */
-    --primary-foreground: 240 244 248;
+    --popover: 30 35 41;
+    --popover-foreground: 234 236 239;
 
-    --secondary: 45 51 59; /* Lighter surface #2d333b */
-    --secondary-foreground: 240 244 248;
+    --primary: 47 128 237; /* Highway Blue #2F80ED */
+    --primary-foreground: 234 236 239;
 
-    --muted: 61 68 77; /* Subtle borders #3d444d */
-    --muted-foreground: 148 163 184; /* Muted text */
+    --secondary: 30 35 41; /* Gunmetal Gray for secondary surfaces */
+    --secondary-foreground: 176 184 193; /* Secondary Text #B0B8C1 */
 
-    --accent: 251 191 36; /* Amber warning #fbbf24 */
-    --accent-foreground: 15 20 25;
+    --muted: 44 50 56; /* Steel Border #2C3238 */
+    --muted-foreground: 122 130 140; /* Muted Text #7A828C */
 
-    --destructive: 239 68 68; /* Red damage #ef4444 */
-    --destructive-foreground: 240 244 248;
+    --accent: 242 153 74; /* Safety Orange #F2994A */
+    --accent-foreground: 18 20 23;
 
-    --border: 61 68 77; /* #3d444d */
-    --input: 61 68 77;
-    --ring: 59 130 246; /* Blue focus ring */
+    --destructive: 235 87 87; /* Brake Red #EB5757 */
+    --destructive-foreground: 234 236 239;
 
-    --radius: 0.75rem; /* Slightly rounded for industrial feel */
+    --border: 44 50 56; /* Steel Border #2C3238 */
+    --input: 44 50 56;
+    --ring: 47 128 237; /* Highway Blue focus ring */
 
-    /* Trucking-specific semantic colors */
-    --profit: 16 185 129; /* Green #10b981 */
-    --income: 6 182 212; /* Cyan #06b6d4 */
-    --fuel: 245 158 11; /* Amber #f59e0b */
-    --damage: 239 68 68; /* Red #ef4444 */
+    --radius: 0.5rem; /* 8px - per style guide 6-8px */
+
+    /* Trucking-specific semantic colors (Style Guide) */
+    --profit: 39 174 96; /* Freight Green #27AE60 */
+    --income: 86 204 242; /* Info Cyan #56CCF2 */
+    --fuel: 242 153 74; /* Safety Orange #F2994A */
+    --damage: 235 87 87; /* Brake Red #EB5757 */
   }
 }
 
@@ -49,19 +52,37 @@
   body {
     background-color: rgb(var(--background));
     color: rgb(var(--foreground));
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-feature-settings: "tnum"; /* Tabular figures for numbers */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* High contrast for readability (trucking dashboards need this) */
-  h1, h2, h3, h4, h5, h6 {
-    font-weight: 700;
+  /* Headings per style guide */
+  h1 {
+    font-size: 2rem; /* 32px - Page Title */
+    font-weight: 600; /* Semibold */
+    line-height: 1.2;
   }
 
-  /* Number-heavy displays */
+  h2 {
+    font-size: 1.25rem; /* 20px - Section Header */
+    font-weight: 500; /* Medium */
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: 1rem; /* 16px - Card Title */
+    font-weight: 500; /* Medium */
+    line-height: 1.4;
+  }
+
+  /* Number-heavy displays - Always use monospace */
   .metric-value {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
     font-feature-settings: "tnum";
     font-variant-numeric: tabular-nums;
+    font-weight: 500;
   }
 }
 
