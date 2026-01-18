@@ -2,6 +2,7 @@
 
 import { PageHeader } from '@/components/layout/page-header';
 import { EmptyState } from '@/components/ui/empty-state';
+import { Gauge } from '@/components/ui/gauge';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -64,35 +65,6 @@ export default function LiveTelemetryPage() {
     };
   }, []);
 
-  const GaugeCard = ({ label, value, max, unit, color }: any) => {
-    const percentage = (value / max) * 100;
-
-    return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
-        <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-4">
-          {label}
-        </h3>
-        <div className="relative pt-1">
-          <div className="flex items-center justify-center mb-4">
-            <span className={`text-4xl font-bold ${color}`}>
-              {Math.round(value)}
-            </span>
-            <span className="text-lg text-slate-500 dark:text-slate-400 ml-2">
-              {unit}
-            </span>
-          </div>
-          <div className="overflow-hidden h-4 text-xs flex rounded-full bg-slate-200 dark:bg-slate-700">
-            <div
-              style={{ width: `${Math.min(percentage, 100)}%` }}
-              className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
-                percentage > 80 ? 'bg-red-500' : percentage > 60 ? 'bg-orange-500' : 'bg-blue-500'
-              } transition-all duration-300`}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   if (!isConnected || !telemetry) {
     return (
@@ -120,68 +92,115 @@ export default function LiveTelemetryPage() {
     <div className="space-y-6">
       <PageHeader
         title="Live Telemetry"
-        description="Real-time truck status and performance metrics"
+        description="Real-time truck dashboard - like riding shotgun"
       />
 
-      {/* Connection Status */}
-      <div className="flex items-center gap-2 text-sm">
-        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-        <span className="text-slate-600 dark:text-slate-400">Connected to game</span>
+      {/* Connection Status - CB Radio Style */}
+      <div className="bg-card border-2 border-[rgb(var(--profit))] rounded-lg p-4 flex items-center gap-3">
+        <div className="w-3 h-3 rounded-full bg-[rgb(var(--profit))] animate-pulse shadow-lg shadow-[rgb(var(--profit))]" />
+        <span className="text-foreground font-semibold uppercase tracking-wide">
+          Connected to Truck
+        </span>
+        <div className="ml-auto text-sm text-muted-foreground font-mono">
+          Live Data Stream Active
+        </div>
       </div>
 
-      {/* Gauges Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <GaugeCard
-          label="Speed"
-          value={telemetry.speed}
-          max={80}
-          unit="mph"
-          color="text-blue-600 dark:text-blue-400"
-        />
+      {/* Primary Gauges - Like Real Truck Dashboard */}
+      <div className="bg-card rounded-lg border-2 border-border p-8 relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
 
-        <GaugeCard
-          label="RPM"
-          value={telemetry.rpm}
-          max={3000}
-          unit="rpm"
-          color="text-purple-600 dark:text-purple-400"
-        />
+        <h2 className="text-xl font-bold text-foreground mb-6 uppercase tracking-wide">
+          Instrument Cluster
+        </h2>
 
-        <GaugeCard
-          label="Fuel"
-          value={fuelPercentage}
-          max={100}
-          unit="%"
-          color={fuelPercentage < 20 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <Gauge
+            value={telemetry.speed}
+            max={80}
+            label="Speed"
+            unit="mph"
+            size="lg"
+            color="primary"
+          />
+
+          <Gauge
+            value={telemetry.rpm}
+            max={3000}
+            label="Engine RPM"
+            unit="rpm"
+            size="lg"
+            color={telemetry.rpm > 2400 ? 'damage' : 'income'}
+          />
+
+          <Gauge
+            value={fuelPercentage}
+            max={100}
+            label="Fuel Level"
+            unit="%"
+            size="lg"
+            color={fuelPercentage < 20 ? 'damage' : 'fuel'}
+          />
+        </div>
       </div>
 
-      {/* Status Cards */}
+      {/* Damage Gauges */}
+      <div className="bg-card rounded-lg border-2 border-border p-8 relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-[rgb(var(--damage))]" />
+
+        <h2 className="text-xl font-bold text-foreground mb-6 uppercase tracking-wide">
+          Vehicle Condition
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Gauge
+            value={Math.max(0, 100 - telemetry.engine_damage * 100)}
+            max={100}
+            label="Engine Health"
+            unit="%"
+            size="md"
+            color={telemetry.engine_damage > 0.1 ? 'damage' : 'profit'}
+          />
+
+          <Gauge
+            value={Math.max(0, 100 - telemetry.cargo_damage * 100)}
+            max={100}
+            label="Cargo Integrity"
+            unit="%"
+            size="md"
+            color={telemetry.cargo_damage > 0.05 ? 'damage' : 'profit'}
+          />
+        </div>
+      </div>
+
+      {/* Status Readouts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Truck Status */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-            Truck Status
+        <div className="bg-card border-2 border-border rounded-lg p-6 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
+
+          <h3 className="text-lg font-bold text-foreground mb-4 uppercase tracking-wide">
+            Drive Status
           </h3>
           <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-slate-600 dark:text-slate-400">Gear</span>
-              <span className="text-sm font-medium text-slate-900 dark:text-white">
+            <div className="flex justify-between items-center py-2 border-b border-border">
+              <span className="text-sm text-muted-foreground uppercase tracking-wider">Current Gear</span>
+              <span className="text-2xl font-bold metric-value text-primary">
                 {telemetry.gear > 0 ? telemetry.gear : telemetry.gear === 0 ? 'N' : 'R'}
               </span>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-slate-600 dark:text-slate-400">Engine Damage</span>
-              <span className={`text-sm font-medium ${
-                telemetry.engine_damage > 10 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'
+            <div className="flex justify-between items-center py-2 border-b border-border">
+              <span className="text-sm text-muted-foreground uppercase tracking-wider">Engine Damage</span>
+              <span className={`text-lg font-bold metric-value ${
+                telemetry.engine_damage > 0.1 ? 'text-[rgb(var(--damage))]' : 'text-[rgb(var(--profit))]'
               }`}>
                 {Math.round(telemetry.engine_damage * 100)}%
               </span>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-slate-600 dark:text-slate-400">Cargo Damage</span>
-              <span className={`text-sm font-medium ${
-                telemetry.cargo_damage > 5 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'
+            <div className="flex justify-between items-center py-2">
+              <span className="text-sm text-muted-foreground uppercase tracking-wider">Cargo Damage</span>
+              <span className={`text-lg font-bold metric-value ${
+                telemetry.cargo_damage > 0.05 ? 'text-[rgb(var(--damage))]' : 'text-[rgb(var(--profit))]'
               }`}>
                 {Math.round(telemetry.cargo_damage * 100)}%
               </span>
@@ -190,26 +209,30 @@ export default function LiveTelemetryPage() {
         </div>
 
         {/* Fuel Status */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-            Fuel Status
+        <div className="bg-card border-2 border-border rounded-lg p-6 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[rgb(var(--fuel))]" />
+
+          <h3 className="text-lg font-bold text-foreground mb-4 uppercase tracking-wide">
+            Fuel System
           </h3>
           <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-slate-600 dark:text-slate-400">Current</span>
-              <span className="text-sm font-medium text-slate-900 dark:text-white">
+            <div className="flex justify-between items-center py-2 border-b border-border">
+              <span className="text-sm text-muted-foreground uppercase tracking-wider">Current</span>
+              <span className="text-lg font-bold metric-value text-foreground">
                 {Math.round(telemetry.fuel_current)} gal
               </span>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-slate-600 dark:text-slate-400">Capacity</span>
-              <span className="text-sm font-medium text-slate-900 dark:text-white">
+            <div className="flex justify-between items-center py-2 border-b border-border">
+              <span className="text-sm text-muted-foreground uppercase tracking-wider">Capacity</span>
+              <span className="text-lg font-bold metric-value text-foreground">
                 {Math.round(telemetry.fuel_capacity)} gal
               </span>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-slate-600 dark:text-slate-400">Range (est.)</span>
-              <span className="text-sm font-medium text-slate-900 dark:text-white">
+            <div className="flex justify-between items-center py-2">
+              <span className="text-sm text-muted-foreground uppercase tracking-wider">Est. Range</span>
+              <span className={`text-lg font-bold metric-value ${
+                fuelPercentage < 20 ? 'text-[rgb(var(--damage))]' : 'text-[rgb(var(--fuel))]'
+              }`}>
                 {Math.round(telemetry.fuel_current * 6)} mi
               </span>
             </div>
