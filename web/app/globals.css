@@ -1,21 +1,68 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Industrial Dashboard Theme - Dark by default */
+    --background: 15 20 25; /* Deep charcoal #0f1419 */
+    --foreground: 240 244 248; /* Light text */
+
+    --card: 37 42 49; /* Surface #252a31 */
+    --card-foreground: 240 244 248;
+
+    --popover: 37 42 49;
+    --popover-foreground: 240 244 248;
+
+    --primary: 59 130 246; /* Blue #3b82f6 */
+    --primary-foreground: 240 244 248;
+
+    --secondary: 45 51 59; /* Lighter surface #2d333b */
+    --secondary-foreground: 240 244 248;
+
+    --muted: 61 68 77; /* Subtle borders #3d444d */
+    --muted-foreground: 148 163 184; /* Muted text */
+
+    --accent: 251 191 36; /* Amber warning #fbbf24 */
+    --accent-foreground: 15 20 25;
+
+    --destructive: 239 68 68; /* Red damage #ef4444 */
+    --destructive-foreground: 240 244 248;
+
+    --border: 61 68 77; /* #3d444d */
+    --input: 61 68 77;
+    --ring: 59 130 246; /* Blue focus ring */
+
+    --radius: 0.75rem; /* Slightly rounded for industrial feel */
+
+    /* Trucking-specific semantic colors */
+    --profit: 16 185 129; /* Green #10b981 */
+    --income: 6 182 212; /* Cyan #06b6d4 */
+    --fuel: 245 158 11; /* Amber #f59e0b */
+    --damage: 239 68 68; /* Red #ef4444 */
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    border-color: rgb(var(--border));
+  }
+
+  body {
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-feature-settings: "tnum"; /* Tabular figures for numbers */
+  }
+
+  /* High contrast for readability (trucking dashboards need this) */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+  }
+
+  /* Number-heavy displays */
+  .metric-value {
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+  }
 }
 
 @layer utilities {
