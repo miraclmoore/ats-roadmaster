@@ -12,7 +12,7 @@ export default function AIDispatcherPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "👋 Hey there! I'm Roadie, your AI dispatcher. I can help you optimize your trucking routes, improve fuel efficiency, and maximize your profits. What would you like to know?",
+      content: "10-4 good buddy! Roadie here on Channel 19. I'm your AI co-pilot ready to help you find the most profitable routes, save on fuel, and keep those wheels turning. What's your 20?",
     },
   ]);
   const [input, setInput] = useState('');
@@ -28,10 +28,10 @@ export default function AIDispatcherPage() {
   }, [messages]);
 
   const quickPrompts = [
-    '💰 What are my most profitable routes?',
-    '⛽ How can I improve fuel efficiency?',
-    '📊 Show me my performance stats',
-    '🎯 What should I focus on next?',
+    'What are my money-making routes?',
+    'Help me save on fuel costs',
+    'Show me the numbers',
+    'What should I haul next?',
   ];
 
   const handleSend = async (messageText?: string) => {
@@ -83,38 +83,74 @@ export default function AIDispatcherPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-12rem)]">
       <PageHeader
-        title="AI Dispatcher"
-        description="Get personalized recommendations and insights powered by AI"
+        title="Roadie - Channel 19"
+        description="Your AI co-pilot on the CB - 10-4 good buddy!"
       />
 
-      {/* Chat Container */}
-      <div className="flex-1 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden">
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      {/* CB Radio Container */}
+      <div className="flex-1 bg-card rounded-lg border-2 border-border flex flex-col overflow-hidden relative">
+        {/* CB Radio Top Bar */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-[rgb(var(--profit))]" />
+
+        {/* Channel Display Header */}
+        <div className="bg-secondary border-b-2 border-border p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-3 h-3 rounded-full bg-[rgb(var(--profit))] animate-pulse shadow-lg shadow-[rgb(var(--profit))]" />
+            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Channel 19 • Active</span>
+          </div>
+          <div className="text-xs text-muted-foreground font-mono">AI DISPATCHER</div>
+        </div>
+        {/* Messages - CB Radio Transmission Style */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-background">
           {messages.map((message, index) => (
             <div
               key={index}
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                  message.role === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white'
-                }`}
-              >
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+              <div className={`max-w-[85%] ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
+                {/* CB Radio Handle/Name */}
+                <div className="flex items-center gap-2 mb-1">
+                  {message.role === 'assistant' && (
+                    <>
+                      <div className="w-2 h-2 rounded-full bg-[rgb(var(--profit))]" />
+                      <span className="text-xs font-bold text-[rgb(var(--profit))] uppercase tracking-wider">Roadie</span>
+                    </>
+                  )}
+                  {message.role === 'user' && (
+                    <>
+                      <span className="text-xs font-bold text-primary uppercase tracking-wider ml-auto">You</span>
+                      <div className="w-2 h-2 rounded-full bg-primary" />
+                    </>
+                  )}
+                </div>
+
+                {/* Message Bubble */}
+                <div
+                  className={`rounded-lg px-4 py-3 border-2 ${
+                    message.role === 'user'
+                      ? 'bg-primary bg-opacity-20 border-primary text-foreground'
+                      : 'bg-secondary border-border text-foreground'
+                  }`}
+                >
+                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                </div>
               </div>
             </div>
           ))}
 
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-slate-100 dark:bg-slate-700 rounded-2xl px-4 py-3">
-                <div className="flex space-x-2">
-                  <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              <div className="max-w-[85%]">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-2 h-2 rounded-full bg-[rgb(var(--profit))]" />
+                  <span className="text-xs font-bold text-[rgb(var(--profit))] uppercase tracking-wider">Roadie</span>
+                </div>
+                <div className="bg-secondary border-2 border-border rounded-lg px-4 py-3">
+                  <div className="flex space-x-2">
+                    <div className="w-2 h-2 bg-[rgb(var(--profit))] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <div className="w-2 h-2 bg-[rgb(var(--profit))] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="w-2 h-2 bg-[rgb(var(--profit))] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -123,17 +159,19 @@ export default function AIDispatcherPage() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Quick Prompts */}
+        {/* Quick Prompts - CB Channel Presets */}
         {messages.length === 1 && (
-          <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-700">
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Quick prompts:</p>
+          <div className="px-6 py-4 border-t-2 border-border bg-secondary">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Quick Channels:</p>
             <div className="grid grid-cols-2 gap-2">
               {quickPrompts.map((prompt, index) => (
                 <button
                   key={index}
                   onClick={() => handleSend(prompt)}
-                  className="text-left px-3 py-2 text-sm bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg transition-colors text-slate-700 dark:text-slate-300"
+                  className="text-left px-4 py-3 text-sm bg-card hover:bg-primary hover:bg-opacity-20 border-2 border-border hover:border-primary rounded transition-all font-semibold text-foreground"
                 >
+                  <span className="text-xs text-primary font-bold">CH {index + 1}</span>
+                  <br />
                   {prompt}
                 </button>
               ))}
@@ -141,24 +179,24 @@ export default function AIDispatcherPage() {
           </div>
         )}
 
-        {/* Input */}
-        <div className="p-4 border-t border-slate-200 dark:border-slate-700">
-          <div className="flex gap-2">
+        {/* Input - CB Radio Mic */}
+        <div className="p-4 border-t-2 border-border bg-secondary">
+          <div className="flex gap-3">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Ask me anything about your trucking business..."
-              className="flex-1 px-4 py-3 bg-slate-100 dark:bg-slate-700 border-0 rounded-lg text-slate-900 dark:text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 outline-none"
+              placeholder="Breaker breaker, what's your question...?"
+              className="flex-1 px-4 py-3 bg-card border-2 border-border rounded text-foreground placeholder-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary outline-none font-medium"
               disabled={isLoading}
             />
             <button
               onClick={() => handleSend()}
               disabled={!input.trim() || isLoading}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+              className="px-8 py-3 bg-[rgb(var(--profit))] hover:bg-[rgb(var(--profit))] hover:opacity-90 disabled:bg-muted disabled:cursor-not-allowed text-background font-bold rounded transition-all uppercase tracking-wide border-2 border-transparent hover:border-[rgb(var(--profit))] disabled:border-border"
             >
-              Send
+              {isLoading ? 'Transmitting...' : '10-4'}
             </button>
           </div>
         </div>
