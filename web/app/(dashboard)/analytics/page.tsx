@@ -49,10 +49,10 @@ export default function AnalyticsPage() {
       <div className="space-y-6">
         <PageHeader
           title="Analytics"
-          description="Performance insights and profitability analysis"
+          description="Business intelligence - profit trends and route analysis"
         />
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary" />
         </div>
       </div>
     );
@@ -63,7 +63,7 @@ export default function AnalyticsPage() {
       <div className="space-y-6">
         <PageHeader
           title="Analytics"
-          description="Performance insights and profitability analysis"
+          description="Business intelligence - profit trends and route analysis"
         />
         <EmptyState
           icon={
@@ -130,79 +130,85 @@ export default function AnalyticsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Analytics"
-        description="Performance insights and profitability analysis"
+        description="Business intelligence - profit trends and route analysis"
       />
 
       {/* Income vs Profit Chart */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">
+      <div className="bg-card rounded-lg border-2 border-border p-8 relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-[rgb(var(--profit))]" />
+
+        <h3 className="text-xl font-bold text-foreground mb-6 uppercase tracking-wide">
           Income & Profit Trend
         </h3>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={incomeData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            <XAxis dataKey="date" stroke="#9CA3AF" />
-            <YAxis stroke="#9CA3AF" />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgb(61, 68, 77)" opacity={0.3} />
+            <XAxis dataKey="date" stroke="rgb(148, 163, 184)" style={{ fontSize: '12px' }} />
+            <YAxis stroke="rgb(148, 163, 184)" style={{ fontSize: '12px' }} />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#1F2937',
-                border: '1px solid #374151',
+                backgroundColor: 'rgb(37, 42, 49)',
+                border: '1px solid rgb(61, 68, 77)',
                 borderRadius: '8px',
-                color: '#F3F4F6',
+                color: 'rgb(240, 244, 248)',
               }}
             />
-            <Legend />
-            <Line type="monotone" dataKey="income" stroke="#10B981" strokeWidth={2} name="Income" />
-            <Line type="monotone" dataKey="profit" stroke="#3B82F6" strokeWidth={2} name="Profit" />
+            <Legend wrapperStyle={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase' }} />
+            <Line type="monotone" dataKey="income" stroke="rgb(6, 182, 212)" strokeWidth={3} name="Income" />
+            <Line type="monotone" dataKey="profit" stroke="rgb(16, 185, 129)" strokeWidth={3} name="Profit" />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Cargo Type Profitability */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">
+        <div className="bg-card rounded-lg border-2 border-border p-8 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
+
+          <h3 className="text-xl font-bold text-foreground mb-6 uppercase tracking-wide">
             Top Cargo Types by Profit
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={cargoData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="name" stroke="#9CA3AF" angle={-45} textAnchor="end" height={100} />
-              <YAxis stroke="#9CA3AF" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgb(61, 68, 77)" opacity={0.3} />
+              <XAxis dataKey="name" stroke="rgb(148, 163, 184)" angle={-45} textAnchor="end" height={100} style={{ fontSize: '11px' }} />
+              <YAxis stroke="rgb(148, 163, 184)" style={{ fontSize: '12px' }} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#1F2937',
-                  border: '1px solid #374151',
+                  backgroundColor: 'rgb(37, 42, 49)',
+                  border: '1px solid rgb(61, 68, 77)',
                   borderRadius: '8px',
-                  color: '#F3F4F6',
+                  color: 'rgb(240, 244, 248)',
                 }}
               />
-              <Bar dataKey="avgProfit" fill="#3B82F6" name="Avg Profit ($)" />
+              <Bar dataKey="avgProfit" fill="rgb(59, 130, 246)" name="Avg Profit ($)" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Route Profitability */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">
+        <div className="bg-card rounded-lg border-2 border-border p-8 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[rgb(var(--profit))]" />
+
+          <h3 className="text-xl font-bold text-foreground mb-6 uppercase tracking-wide">
             Most Profitable Routes
           </h3>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {routeData.map((route, index) => (
-              <div key={index} className="flex items-center justify-between">
+              <div key={index} className="flex items-center justify-between p-4 bg-secondary border border-border rounded hover:border-primary transition-all">
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-slate-900 dark:text-white">
+                  <p className="text-sm font-bold text-foreground">
                     {route.route}
                   </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {route.jobs} jobs completed
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                    {route.jobs} deliveries completed
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-lg font-bold text-green-600 dark:text-green-400">
+                  <p className="text-xl font-bold metric-value text-[rgb(var(--profit))]">
                     ${route.profit.toLocaleString()}
                   </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">avg profit</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide">avg profit</p>
                 </div>
               </div>
             ))}
@@ -212,35 +218,40 @@ export default function AnalyticsPage() {
 
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 rounded-xl p-6">
-          <h4 className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
+        <div className="bg-card border-2 border-primary rounded-lg p-6 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
+          <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
             Total Jobs Completed
           </h4>
-          <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+          <p className="text-4xl font-bold metric-value text-primary">
             {jobs.length}
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/20 rounded-xl p-6">
-          <h4 className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
+        <div className="bg-card border-2 border-[rgb(var(--profit))] rounded-lg p-6 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[rgb(var(--profit))]" />
+          <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
             Total Distance
           </h4>
-          <p className="text-3xl font-bold text-green-600 dark:text-green-400">
-            {jobs.reduce((sum, job) => sum + job.distance, 0).toLocaleString()} mi
+          <p className="text-4xl font-bold metric-value text-[rgb(var(--profit))]">
+            {jobs.reduce((sum, job) => sum + job.distance, 0).toLocaleString()}
+            <span className="text-lg text-muted-foreground ml-2">mi</span>
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/20 rounded-xl p-6">
-          <h4 className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
+        <div className="bg-card border-2 border-[rgb(var(--fuel))] rounded-lg p-6 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[rgb(var(--fuel))]" />
+          <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
             Avg Fuel Economy
           </h4>
-          <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+          <p className="text-4xl font-bold metric-value text-[rgb(var(--fuel))]">
             {jobs.some(j => j.fuel_economy)
               ? Math.round(
                   jobs.filter(j => j.fuel_economy).reduce((sum, job) => sum + (job.fuel_economy || 0), 0) /
                   jobs.filter(j => j.fuel_economy).length
                 ).toFixed(1)
-              : '—'} mpg
+              : '—'}
+            <span className="text-lg text-muted-foreground ml-2">mpg</span>
           </p>
         </div>
       </div>
