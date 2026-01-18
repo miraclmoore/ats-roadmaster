@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, Copy, RefreshCw } from 'lucide-react';
+import { Check, Copy, RefreshCw, Save } from 'lucide-react';
 
 interface SettingsClientProps {
   initialApiKey: string;
@@ -20,6 +20,13 @@ export function SettingsClient({
   const [copied, setCopied] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
+  // Preferences state
+  const [units, setUnits] = useState(initialPreferences.units);
+  const [currency, setCurrency] = useState(initialPreferences.currency);
+  const [timezone, setTimezone] = useState(initialPreferences.timezone);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(apiKey);
@@ -47,6 +54,37 @@ export function SettingsClient({
       alert('Failed to regenerate API key. Please try again.');
     } finally {
       setRegenerating(false);
+    }
+  };
+
+  const handleSavePreferences = async () => {
+    setSaving(true);
+    setSaved(false);
+
+    try {
+      const response = await fetch('/api/user/preferences', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          units,
+          currency,
+          timezone,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save preferences');
+      }
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (error) {
+      console.error('Error saving preferences:', error);
+      alert('Failed to save preferences. Please try again.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -118,8 +156,9 @@ export function SettingsClient({
               Units
             </label>
             <select
-              defaultValue={initialPreferences.units}
-              className="w-full bg-muted border border-border rounded px-3 py-2 text-foreground"
+              value={units}
+              onChange={(e) => setUnits(e.target.value)}
+              className="w-full bg-muted border border-border rounded px-3 py-2 text-foreground cursor-pointer hover:bg-muted/80 transition-colors"
             >
               <option value="imperial">Imperial (mph, gallons, miles)</option>
               <option value="metric">Metric (km/h, liters, kilometers)</option>
@@ -131,8 +170,9 @@ export function SettingsClient({
               Currency
             </label>
             <select
-              defaultValue={initialPreferences.currency}
-              className="w-full bg-muted border border-border rounded px-3 py-2 text-foreground"
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              className="w-full bg-muted border border-border rounded px-3 py-2 text-foreground cursor-pointer hover:bg-muted/80 transition-colors"
             >
               <option value="USD">USD ($)</option>
               <option value="EUR">EUR (€)</option>
@@ -145,8 +185,9 @@ export function SettingsClient({
               Timezone
             </label>
             <select
-              defaultValue={initialPreferences.timezone}
-              className="w-full bg-muted border border-border rounded px-3 py-2 text-foreground"
+              value={timezone}
+              onChange={(e) => setTimezone(e.target.value)}
+              className="w-full bg-muted border border-border rounded px-3 py-2 text-foreground cursor-pointer hover:bg-muted/80 transition-colors"
             >
               <option value="America/Los_Angeles">Pacific (PST/PDT)</option>
               <option value="America/Denver">Mountain (MST/MDT)</option>
@@ -157,8 +198,22 @@ export function SettingsClient({
             </select>
           </div>
 
-          <button className="px-4 py-2 bg-primary text-primary-foreground rounded hover:opacity-90">
-            Save Preferences
+          <button
+            onClick={handleSavePreferences}
+            disabled={saving}
+            className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-semibold shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30"
+          >
+            {saved ? (
+              <>
+                <Check className="w-5 h-5" />
+                Saved!
+              </>
+            ) : (
+              <>
+                <Save className="w-5 h-5" />
+                {saving ? 'Saving...' : 'Save Preferences'}
+              </>
+            )}
           </button>
         </div>
       </div>
