@@ -26,6 +26,11 @@ const colorConfig = {
   primary: 'rgb(47, 128, 237)',  // Highway Blue #2F80ED
 };
 
+// Round to fixed decimal places to prevent hydration mismatches
+const round = (num: number, decimals: number = 2): number => {
+  return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+};
+
 export function Gauge({
   value,
   max,
@@ -46,16 +51,16 @@ export function Gauge({
   const centerY = config.width / 2;
 
   // Radius for the arc path
-  const radius = (config.width - config.stroke) / 2;
+  const radius = round((config.width - config.stroke) / 2);
 
   // Calculate end point of the arc based on sweep angle
   const startAngle = 180; // Start from left (180 degrees)
   const endAngle = startAngle + sweepAngle;
 
-  const startX = centerX + radius * Math.cos((startAngle * Math.PI) / 180);
-  const startY = centerY + radius * Math.sin((startAngle * Math.PI) / 180);
-  const endX = centerX + radius * Math.cos((endAngle * Math.PI) / 180);
-  const endY = centerY + radius * Math.sin((endAngle * Math.PI) / 180);
+  const startX = round(centerX + radius * Math.cos((startAngle * Math.PI) / 180));
+  const startY = round(centerY + radius * Math.sin((startAngle * Math.PI) / 180));
+  const endX = round(centerX + radius * Math.cos((endAngle * Math.PI) / 180));
+  const endY = round(centerY + radius * Math.sin((endAngle * Math.PI) / 180));
 
   // Large arc flag: 1 if sweep angle > 180, else 0
   const largeArcFlag = sweepAngle > 180 ? 1 : 0;
