@@ -54,6 +54,7 @@ CREATE INDEX IF NOT EXISTS idx_jobs_route ON public.jobs(source_city, destinatio
 -- RLS for jobs
 ALTER TABLE public.jobs ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS jobs_user_policy ON public.jobs;
 CREATE POLICY jobs_user_policy ON public.jobs
   FOR ALL USING (auth.uid() = user_id);
 
@@ -99,6 +100,7 @@ CREATE INDEX IF NOT EXISTS idx_telemetry_user_created ON public.telemetry(user_i
 -- RLS for telemetry
 ALTER TABLE public.telemetry ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS telemetry_user_policy ON public.telemetry;
 CREATE POLICY telemetry_user_policy ON public.telemetry
   FOR ALL USING (auth.uid() = user_id);
 
@@ -143,6 +145,7 @@ CREATE TABLE IF NOT EXISTS public.user_achievements (
 -- RLS for user achievements
 ALTER TABLE public.user_achievements ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS user_achievements_policy ON public.user_achievements;
 CREATE POLICY user_achievements_policy ON public.user_achievements
   FOR ALL USING (auth.uid() = user_id);
 
@@ -168,6 +171,7 @@ CREATE TABLE IF NOT EXISTS public.company_stats (
 -- RLS for company stats
 ALTER TABLE public.company_stats ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS company_stats_policy ON public.company_stats;
 CREATE POLICY company_stats_policy ON public.company_stats
   FOR ALL USING (auth.uid() = user_id);
 
@@ -196,6 +200,7 @@ CREATE TABLE IF NOT EXISTS public.user_preferences (
 -- RLS for user preferences
 ALTER TABLE public.user_preferences ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS user_preferences_policy ON public.user_preferences;
 CREATE POLICY user_preferences_policy ON public.user_preferences
   FOR ALL USING (auth.uid() = user_id);
 
