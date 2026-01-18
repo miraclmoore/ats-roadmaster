@@ -38,20 +38,42 @@ export function Gauge({
   const config = sizeConfig[size];
   const percentage = Math.min((value / max) * 100, 100);
 
-  // SVG circle calculations
+  // Calculate arc sweep angle (0 to 180 degrees for semi-circle)
+  const sweepAngle = (percentage / 100) * 180;
+
+  // Center point
+  const centerX = config.width / 2;
+  const centerY = config.width / 2;
+
+  // Radius for the arc path
   const radius = (config.width - config.stroke) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (percentage / 100) * circumference;
+
+  // Calculate end point of the arc based on sweep angle
+  const startAngle = 180; // Start from left (180 degrees)
+  const endAngle = startAngle + sweepAngle;
+
+  const startX = centerX + radius * Math.cos((startAngle * Math.PI) / 180);
+  const startY = centerY + radius * Math.sin((startAngle * Math.PI) / 180);
+  const endX = centerX + radius * Math.cos((endAngle * Math.PI) / 180);
+  const endY = centerY + radius * Math.sin((endAngle * Math.PI) / 180);
+
+  // Large arc flag: 1 if sweep angle > 180, else 0
+  const largeArcFlag = sweepAngle > 180 ? 1 : 0;
+
+  // Create the arc path
+  const valueArcPath = sweepAngle > 0
+    ? `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`
+    : '';
 
   // Determine needle rotation (0-180 degrees for half-circle gauge)
-  const needleRotation = (percentage / 100) * 180 - 90;
+  const needleRotation = sweepAngle - 90;
 
   const gaugeColor = colorConfig[color];
 
   return (
     <div className={cn("flex flex-col items-center gap-2", className)}>
       {/* Gauge SVG */}
-      <div className="relative" style={{ width: config.width, height: config.width / 2 + 20 }}>
+      <div className="relative" style={{ width: config.width, height: config.width / 2 + 60 }}>
         <svg
           width={config.width}
           height={config.width / 2 + 20}
@@ -67,20 +89,18 @@ export function Gauge({
           />
 
           {/* Value arc */}
-          <path
-            d={`M ${config.stroke / 2} ${config.width / 2} A ${radius} ${radius} 0 0 1 ${config.width - config.stroke / 2} ${config.width / 2}`}
-            fill="none"
-            stroke={gaugeColor}
-            strokeWidth={config.stroke}
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            style={{
-              transition: 'stroke-dashoffset 0.5s ease',
-              transformOrigin: 'center',
-              transform: 'rotate(-180deg) scaleX(-1)',
-            }}
-          />
+          {valueArcPath && (
+            <path
+              d={valueArcPath}
+              fill="none"
+              stroke={gaugeColor}
+              strokeWidth={config.stroke}
+              strokeLinecap="round"
+              style={{
+                transition: 'all 0.5s ease',
+              }}
+            />
+          )}
 
           {/* Center dot */}
           <circle
@@ -108,7 +128,7 @@ export function Gauge({
         </svg>
 
         {/* Value display */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ top: '40%' }}>
+        <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-2">
           <div className="flex items-baseline gap-1">
             <span
               className="font-bold metric-value"

@@ -123,17 +123,33 @@ export default async function JobsPage() {
                     </td>
                     <td className="px-6 py-4">
                       {job.completed_at ? (
-                        <span className={`inline-flex items-center px-3 py-1 rounded text-xs font-bold uppercase tracking-wide ${
+                        <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded ${
                           job.delivered_late
-                            ? 'bg-[rgb(var(--fuel))] bg-opacity-20 text-[rgb(var(--fuel))] border border-[rgb(var(--fuel))]'
-                            : 'bg-[rgb(var(--profit))] bg-opacity-20 text-[rgb(var(--profit))] border border-[rgb(var(--profit))]'
+                            ? 'bg-[rgb(var(--fuel)/0.2)] text-[rgb(var(--fuel))]'
+                            : 'bg-[rgb(var(--profit)/0.2)] text-[rgb(var(--profit))]'
                         }`}>
-                          {job.delivered_late ? 'Late' : 'On Time'}
-                        </span>
+                          {job.delivered_late ? (
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          ) : (
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                          <span className="text-sm font-bold uppercase tracking-wide">
+                            {job.delivered_late ? 'Late' : 'On Time'}
+                          </span>
+                        </div>
                       ) : (
-                        <span className="inline-flex items-center px-3 py-1 rounded text-xs font-bold uppercase tracking-wide bg-primary bg-opacity-20 text-primary border border-primary">
-                          In Progress
-                        </span>
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-[rgb(var(--primary)/0.2)] text-primary">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-sm font-bold uppercase tracking-wide">
+                            In Progress
+                          </span>
+                        </div>
                       )}
                     </td>
                     <td className="px-6 py-4">
