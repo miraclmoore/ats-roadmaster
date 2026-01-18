@@ -55,26 +55,55 @@ export async function POST(req: Request) {
       .sort((a, b) => b.avgProfit - a.avgProfit)
       .slice(0, 5);
 
+    // Cargo profitability
+    const cargoStats = jobs?.reduce((acc: any, job) => {
+      if (!acc[job.cargo_type]) {
+        acc[job.cargo_type] = { totalProfit: 0, count: 0 };
+      }
+      acc[job.cargo_type].totalProfit += job.profit || 0;
+      acc[job.cargo_type].count += 1;
+      return acc;
+    }, {});
+
+    const topCargo = Object.entries(cargoStats || {})
+      .map(([cargo, stats]: [string, any]) => ({
+        cargo,
+        avgProfit: Math.round(stats.totalProfit / stats.count),
+        count: stats.count,
+      }))
+      .sort((a, b) => b.avgProfit - a.avgProfit)
+      .slice(0, 5);
+
     // Build context for AI
-    const context = `You are Roadie, an AI dispatcher assistant for a virtual trucking company in American Truck Simulator.
+    const context = `You are Roadie, an AI dispatcher on CB Radio Channel 19. You're helping a trucker optimize their routes in American Truck Simulator.
 
-USER STATS:
-- Total Jobs Completed: ${totalJobs}
+PERSONALITY:
+- Experienced trucker who knows the profitable routes
+- Use CB radio lingo naturally (10-4, good buddy, breaker breaker, keep the shiny side up)
+- Be concise - truckers are busy on the road
+- Focus on profit and efficiency
+- End messages with CB sign-offs
+
+DRIVER'S PERFORMANCE:
+- Jobs Completed: ${totalJobs}
 - Total Income: $${totalIncome.toLocaleString()}
-- Total Profit: $${totalProfit.toLocaleString()}
-- Average Profit per Job: $${Math.round(avgProfit).toLocaleString()}
+- Net Profit: $${totalProfit.toLocaleString()}
+- Avg Profit/Job: $${Math.round(avgProfit).toLocaleString()}
 
-${topRoutes.length > 0 ? `TOP PROFITABLE ROUTES:
-${topRoutes.map((r, i) => `${i + 1}. ${r.route}: $${r.avgProfit} avg profit (${r.count} jobs)`).join('\n')}` : 'No route data available yet.'}
+${topRoutes.length > 0 ? `MOST PROFITABLE ROUTES:
+${topRoutes.map((r, i) => `${i + 1}. ${r.route} - $${r.avgProfit}/job (${r.count} runs)`).join('\n')}` : 'No route history yet - get out there and haul some freight!'}
 
-Your job is to:
-1. Provide actionable advice based on their actual performance data
-2. Be friendly, encouraging, and use trucking terminology
-3. Keep responses concise (under 200 words)
-4. Use specific numbers from their stats when relevant
-5. Give practical tips for improving profits and efficiency
+${topCargo.length > 0 ? `BEST-PAYING CARGO:
+${topCargo.map((c, i) => `${i + 1}. ${c.cargo} - $${c.avgProfit}/job (${c.count} loads)`).join('\n')}` : ''}
 
-User's question: ${message}`;
+INSTRUCTIONS:
+- Base recommendations on their actual numbers
+- When suggesting routes, cite specific profits from their history
+- Keep responses under 150 words
+- Use trucker lingo but stay professional and helpful
+- Always end with a CB sign-off (10-4, catch you on the flip-side, keep the hammer down, etc.)
+
+Driver's question: ${message}`;
 
     // Call Claude API
     const anthropic = new Anthropic({
@@ -82,7 +111,7 @@ User's question: ${message}`;
     });
 
     const completion = await anthropic.messages.create({
-      model: 'claude-sonnet-3-5-20241022',
+      model: 'claude-sonnet-4-20250514',
       max_tokens: 1024,
       messages: [
         {
