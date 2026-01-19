@@ -7,10 +7,10 @@ echo "========================================="
 echo ""
 
 # Prompt for API key
-read -p "Enter your API key (starts with rm_): " API_KEY
+read -p "Enter your API key: " API_KEY
 
-if [[ ! $API_KEY =~ ^rm_ ]]; then
-  echo "❌ Invalid API key format. Must start with 'rm_'"
+if [ -z "$API_KEY" ]; then
+  echo "❌ API key cannot be empty"
   exit 1
 fi
 
