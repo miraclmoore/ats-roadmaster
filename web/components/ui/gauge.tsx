@@ -7,15 +7,19 @@ interface GaugeProps {
   max: number;
   label: string;
   unit?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   color?: 'profit' | 'income' | 'fuel' | 'damage' | 'primary';
   className?: string;
+  variant?: 'minimal' | 'detailed' | 'realistic';
+  cruiseControlSpeed?: number;
+  zones?: Array<{ start: number; end: number; color: string }>;
 }
 
 const sizeConfig = {
+  xs: { width: 100, stroke: 6, fontSize: '1.25rem', labelSize: '0.65rem' },
   sm: { width: 120, stroke: 8, fontSize: '1.5rem', labelSize: '0.75rem' },
-  md: { width: 160, stroke: 10, fontSize: '2rem', labelSize: '0.875rem' },
-  lg: { width: 200, stroke: 12, fontSize: '2.5rem', labelSize: '1rem' },
+  md: { width: 140, stroke: 9, fontSize: '1.75rem', labelSize: '0.8rem' },
+  lg: { width: 180, stroke: 11, fontSize: '2.25rem', labelSize: '0.95rem' },
 };
 
 const colorConfig = {
@@ -39,6 +43,9 @@ export function Gauge({
   size = 'md',
   color = 'primary',
   className,
+  variant = 'detailed',
+  cruiseControlSpeed,
+  zones = [],
 }: GaugeProps) {
   const config = sizeConfig[size];
   const percentage = Math.min((value / max) * 100, 100);
@@ -75,6 +82,11 @@ export function Gauge({
 
   const gaugeColor = colorConfig[color];
 
+  // Calculate cruise control marker position if provided
+  const cruiseControlAngle = cruiseControlSpeed 
+    ? ((cruiseControlSpeed / max) * 180) - 90
+    : null;
+
   return (
     <div className={cn("flex flex-col items-center gap-2", className)}>
       {/* Gauge SVG */}
@@ -93,6 +105,30 @@ export function Gauge({
             strokeLinecap="round"
           />
 
+          {/* Zone arcs (for redline, warnings, etc.) */}
+          {zones.map((zone, idx) => {
+            const zoneStartAngle = 180 + (zone.start / max) * 180;
+            const zoneEndAngle = 180 + (zone.end / max) * 180;
+            const zoneSweep = zoneEndAngle - zoneStartAngle;
+            
+            const zoneStartX = round(centerX + radius * Math.cos((zoneStartAngle * Math.PI) / 180));
+            const zoneStartY = round(centerY + radius * Math.sin((zoneStartAngle * Math.PI) / 180));
+            const zoneEndX = round(centerX + radius * Math.cos((zoneEndAngle * Math.PI) / 180));
+            const zoneEndY = round(centerY + radius * Math.sin((zoneEndAngle * Math.PI) / 180));
+            
+            return (
+              <path
+                key={idx}
+                d={`M ${zoneStartX} ${zoneStartY} A ${radius} ${radius} 0 ${zoneSweep > 180 ? 1 : 0} 1 ${zoneEndX} ${zoneEndY}`}
+                fill="none"
+                stroke={zone.color}
+                strokeWidth={config.stroke}
+                strokeLinecap="round"
+                opacity={0.3}
+              />
+            );
+          })}
+
           {/* Value arc */}
           {valueArcPath && (
             <path
@@ -104,6 +140,24 @@ export function Gauge({
               style={{
                 transition: 'all 0.5s ease',
               }}
+            />
+          )}
+
+          {/* Cruise control marker */}
+          {cruiseControlAngle !== null && (
+            <line
+              x1={config.width / 2}
+              y1={config.width / 2}
+              x2={config.width / 2}
+              y2={config.stroke + 5}
+              stroke="rgb(96, 165, 250)"
+              strokeWidth={3}
+              strokeLinecap="round"
+              style={{
+                transformOrigin: `${config.width / 2}px ${config.width / 2}px`,
+                transform: `rotate(${cruiseControlAngle}deg)`,
+              }}
+              opacity={0.6}
             />
           )}
 
