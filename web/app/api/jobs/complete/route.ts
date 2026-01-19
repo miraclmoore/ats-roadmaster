@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 import { NextRequest, NextResponse } from 'next/server';
 
 // POST /api/jobs/complete
@@ -22,7 +22,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
+    // Use service client to bypass RLS (API routes authenticate via API key)
+    const supabase = createServiceClient();
 
     // If using API key (from SDK plugin), look up user_id
     let userId = data.user_id;
