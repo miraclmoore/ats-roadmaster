@@ -38,10 +38,12 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Redirect to login if user is not authenticated and trying to access protected routes
+  // Skip authentication check for API routes (they handle their own auth via API keys)
   if (
     !user &&
     !request.nextUrl.pathname.startsWith('/login') &&
     !request.nextUrl.pathname.startsWith('/signup') &&
+    !request.nextUrl.pathname.startsWith('/api/') &&
     request.nextUrl.pathname !== '/'
   ) {
     const url = request.nextUrl.clone();
