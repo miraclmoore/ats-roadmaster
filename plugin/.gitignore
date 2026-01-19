@@ -2,6 +2,7 @@
 bin/
 obj/
 *.dll
+!scs-telemetry.dll
 *.exe
 *.pdb
 *.user
