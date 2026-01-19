@@ -46,6 +46,25 @@ public struct SCSTelemetry
 
     public SCSTelemetry()
     {
+        SdkActive = 0;
+        Paused = 0;
+        Speed = 0;
+        EngineRpm = 0;
+        Gear = 0;
+        FuelAmount = 0;
+        FuelCapacity = 0;
+        EngineDamage = 0;
+        TransmissionDamage = 0;
+        ChassisDamage = 0;
+        WheelsDamage = 0;
+        CabinDamage = 0;
+        CargoDamage = 0;
+        PositionX = 0;
+        PositionY = 0;
+        PositionZ = 0;
+        JobIncome = 0;
+        JobDistance = 0;
+        JobDeliveredLate = 0;
         SourceCity = new byte[64];
         DestinationCity = new byte[64];
         CargoName = new byte[64];

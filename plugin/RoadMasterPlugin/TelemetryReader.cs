@@ -1,14 +1,16 @@
 using System.IO.MemoryMappedFiles;
+using System.Runtime.Versioning;
 using RoadMasterPlugin.Models;
 
 namespace RoadMasterPlugin;
 
-public class TelemetryReader
+public class TelemetryReader : IDisposable
 {
     private const string MMF_NAME = "Local\\SCSTelemetry";
     private MemoryMappedFile? mmf;
     private MemoryMappedViewAccessor? accessor;
 
+    [SupportedOSPlatform("windows")]
     public bool Initialize()
     {
         try
@@ -36,7 +38,7 @@ public class TelemetryReader
 
         try
         {
-            SCSTelemetry data = new SCSTelemetry();
+            SCSTelemetry data = default;
             accessor.Read(0, out data);
             return data;
         }
