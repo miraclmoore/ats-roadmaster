@@ -1,147 +1,172 @@
-# 🚛 RoadMaster Pro - ATS Telemetry Plugin
+# RoadMaster Pro - ATS Telemetry Plugin
 
 Connects American Truck Simulator to your RoadMaster Pro dashboard for real-time tracking and analytics.
 
 ## Prerequisites
 
-- **American Truck Simulator** (latest version recommended)
-- **.NET 6.0 Runtime** (x64) - [Download here](https://dotnet.microsoft.com/download/dotnet/6.0)
-- **RoadMaster Pro Account** with API key
+### 1. RenCloud SCS Telemetry SDK (REQUIRED)
+
+This plugin reads telemetry data from the RenCloud SDK. You MUST install it first:
+
+1. Download the latest release from: https://github.com/RenCloud/scs-sdk-plugin/releases
+2. Extract `scs-telemetry.dll`
+3. Copy it to your ATS game plugins folder:
+   ```
+   [Steam Library]\steamapps\common\American Truck Simulator\bin\win_x64\plugins\
+   ```
+   Example: `D:\SteamLibrary\steamapps\common\American Truck Simulator\bin\win_x64\plugins\scs-telemetry.dll`
+
+4. Create the `plugins` folder if it doesn't exist
+5. Launch ATS - you should see an **SDK activation popup** - click **Yes**
+
+**If you don't see the popup, the SDK is not installed correctly.**
+
+### 2. .NET 6.0 Runtime (x64)
+
+Download from: https://dotnet.microsoft.com/download/dotnet/6.0
+
+### 3. RoadMaster Pro Account with API Key
+
+Get your API key from the dashboard settings page.
 
 ## Quick Start
 
-### 1. Get Your API Key
-
-1. Open your RoadMaster Pro dashboard: http://localhost:3002/dashboard
-2. Copy your API key (starts with `rm_`)
-   - If you don't see it, check the Settings page or user_preferences table in Supabase
-
-### 2. Build the Plugin
+### 1. Build the Plugin
 
 ```batch
 build.bat
 ```
 
-This compiles the C# plugin into a DLL that ATS can load.
+This compiles the C# application. The executable will be at:
+`RoadMasterPlugin\bin\Release\net6.0\win-x64\RoadMasterPlugin.exe`
 
-### 3. Install to ATS
+### 2. Configure API Key
 
-```batch
-install.bat
+Edit the config file in the build folder:
+```
+RoadMasterPlugin\bin\Release\net6.0\win-x64\config.json
 ```
 
-This copies the plugin files to your ATS plugins directory:
-`%USERPROFILE%\Documents\American Truck Simulator\bin\win_x64\plugins\`
+Replace `rm_YOUR_API_KEY_HERE` with your actual API key:
+```json
+{
+  "apiKey": "rm_your_actual_key_here",
+  "apiUrl": "http://localhost:3000"
+}
+```
 
-### 4. Configure API Key
-
-1. Open the config file:
-   ```
-   %USERPROFILE%\Documents\American Truck Simulator\bin\win_x64\plugins\config.json
-   ```
-
-2. Edit and replace `rm_YOUR_API_KEY_HERE` with your actual API key:
-   ```json
-   {
-     "apiKey": "rm_your_actual_key_here",
-     "apiUrl": "http://localhost:3002"
-   }
-   ```
-
-3. Save the file
-
-### 5. Launch ATS
+### 3. Run the Plugin
 
 1. Start American Truck Simulator
-2. The plugin loads automatically when you enter the game
-3. Accept a job from the freight market
-4. Start driving!
+2. Make sure you accepted the SDK activation popup
+3. Enter the game world (not just the menu)
+4. Run the plugin:
+   ```
+   RoadMasterPlugin\bin\Release\net6.0\win-x64\RoadMasterPlugin.exe
+   ```
+5. Accept a job and start driving!
 
 ## How It Works
 
-The plugin:
-- ✅ Reads game telemetry via SCS SDK (Memory Mapped File)
-- ✅ Detects when you start/complete jobs
-- ✅ Sends truck data every second (speed, RPM, fuel, damage, position)
-- ✅ Calculates profit automatically based on fuel/damage costs
-- ✅ Updates your dashboard in real-time
+The plugin is a **standalone console application** that runs alongside ATS:
 
-## Verifying It Works
-
-### In ATS Console
-
-When you launch ATS, you should see:
 ```
-🚛 RoadMaster Pro - ATS Telemetry Plugin
+ATS Game
+    |
+    v (RenCloud SDK creates shared memory)
+"Local\SCSTelemetry" Memory Mapped File
+    ^
+    | (Plugin reads shared memory)
+RoadMasterPlugin.exe (this app)
+    |
+    v (HTTP POST)
+Your Dashboard API (localhost:3000)
+```
+
+Features:
+- Reads game telemetry via RenCloud SDK (Memory Mapped File)
+- Detects job start/complete events automatically
+- Sends truck data in real-time (speed, RPM, fuel, damage, position)
+- Dashboard calculates profit based on fuel/damage costs
+
+## Console Output
+
+When running correctly, you'll see:
+
+```
+RoadMaster Pro - ATS Telemetry Plugin
 ==========================================
 
-✅ API configured: http://localhost:3002
-✅ Connected to American Truck Simulator
+[OK] API configured: http://localhost:3000
+[...] Connecting to ATS via RenCloud SDK...
+[OK] Connected to RenCloud SDK telemetry
 
-Monitoring telemetry data (1Hz sampling)...
+Monitoring telemetry data...
+
+Waiting for game data (enter the game world to start receiving data)...
+
+Press any key to stop the plugin...
 ```
 
 When you accept a job:
 ```
-🚛 Job started: Los Angeles → San Francisco
-   Cargo: Electronics
-   Income: $12,450
-   Distance: 382 km
+[JOB] Started: Los Angeles -> San Francisco
+      Cargo: Electronics
+      Income: $12,450
+      Distance: 382 km
 ```
 
 When you complete it:
 ```
-✅ Job completed: Los Angeles → San Francisco
-   Status: ✓ On Time
-   Profit calculated and saved to dashboard
+[OK] Job completed: Los Angeles -> San Francisco
+     Profit calculated and saved to dashboard
 ```
-
-### In Dashboard
-
-1. Open http://localhost:3002/dashboard
-2. You should see your job appear immediately
-3. Performance metrics update in real-time
-4. Check http://localhost:3002/live for live telemetry (speed, RPM, fuel)
 
 ## Troubleshooting
 
 ### "Cannot connect to American Truck Simulator"
 
-**Causes:**
-- ATS is not running
-- You're in the menu (not in-game)
-- SCS SDK is not enabled
+**Cause:** RenCloud SDK is not installed or not working.
 
 **Solutions:**
-1. Make sure ATS is running and you're driving
-2. Check ATS has SDK enabled (usually enabled by default)
+1. Verify `scs-telemetry.dll` is in the correct folder:
+   `[Steam]\steamapps\common\American Truck Simulator\bin\win_x64\plugins\`
+2. Launch ATS - you MUST see the SDK activation popup and click Yes
+3. Check the ATS game.log.txt for plugin loading errors
+
+### No SDK Activation Popup
+
+**Cause:** The DLL is in the wrong folder.
+
+**Solutions:**
+1. Make sure the DLL is in the **game's own folder**, NOT in Documents
+2. The folder structure should be:
+   ```
+   American Truck Simulator\
+     bin\
+       win_x64\
+         plugins\
+           scs-telemetry.dll   <-- HERE
+   ```
 
 ### "API key not configured"
 
 **Solution:**
-1. Make sure you edited `config.json` in the plugins folder
-2. Verify you replaced `rm_YOUR_API_KEY_HERE` with your actual key
-3. Check there are no typos in the API key
+1. Edit `config.json` in the build output folder
+2. Replace `rm_YOUR_API_KEY_HERE` with your actual key
+3. Get your API key from http://localhost:3000/settings
 
-### "No data appearing in dashboard"
+### Plugin connects but no data appears
 
 **Checks:**
-1. Verify plugin is running (check ATS console output)
-2. Confirm API key is correct in `config.json`
-3. Ensure dashboard is running at http://localhost:3002
-4. Check browser console for errors (F12)
-5. Verify you're logged into the dashboard with the same account
-
-### "DLL not loading" / Plugin doesn't start
-
-**Solutions:**
-1. Install .NET 6.0 Runtime (x64): https://dotnet.microsoft.com/download/dotnet/6.0
-2. Make sure you built for x64 platform (build.bat does this automatically)
-3. Check ATS logs for errors
+1. Are you in the game world (not menu)?
+2. Is the dashboard running at localhost:3000?
+3. Is your API key correct?
+4. Check the plugin console for error messages
 
 ## Production Deployment
 
-Once you deploy your dashboard to Vercel:
+Once you deploy your dashboard:
 
 1. Edit `config.json` and update the `apiUrl`:
    ```json
@@ -151,55 +176,35 @@ Once you deploy your dashboard to Vercel:
    }
    ```
 
-2. Restart ATS
-
-The plugin will now send data to your production server instead of localhost.
-
-## Uninstall
-
-To remove the plugin:
-
-1. Delete the files from:
-   ```
-   %USERPROFILE%\Documents\American Truck Simulator\bin\win_x64\plugins\
-   ```
-
-2. Specifically remove:
-   - RoadMasterPlugin.dll
-   - RoadMasterPlugin.deps.json
-   - RoadMasterPlugin.runtimeconfig.json
-   - Newtonsoft.Json.dll
-   - config.json
+2. Run the plugin again
 
 ## Development
 
 ### Building from Source
 
 Requirements:
-- .NET 6.0 SDK (not just runtime)
+- .NET 6.0 SDK
 - Visual Studio 2022 or VS Code with C# extension
 
 ```batch
 cd RoadMasterPlugin
 dotnet restore
-dotnet build -c Release -p:Platform=x64
+dotnet build -c Release
 ```
 
-### Testing Without ATS
+### Project Structure
 
-You can test the API client without the game by modifying `Plugin.cs` to send mock data.
-
-## Support
-
-- Check logs in ATS console
-- Verify dashboard is running: http://localhost:3002
-- Review API logs in Supabase dashboard
-- Check browser developer console (F12)
+```
+plugin/
+  RoadMasterPlugin/
+    Plugin.cs           - Main entry point, event handling
+    ApiClient.cs        - HTTP communication with dashboard
+    Models/             - Data models (Job, Config, API responses)
+    SCSSdkClient/       - RenCloud SDK C# client library
+      Object/           - Telemetry data structures
+    config.json         - API configuration
+```
 
 ## License
 
 Part of RoadMaster Pro - All rights reserved
-
----
-
-**Built with ❤️ for the ATS community**

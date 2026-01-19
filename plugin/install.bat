@@ -1,50 +1,47 @@
 @echo off
 echo.
 echo ========================================
-echo   RoadMaster Pro - Installing Plugin
+echo   RoadMaster Pro - Build Info
 echo ========================================
 echo.
 
-set ATS_PLUGINS=%USERPROFILE%\Documents\American Truck Simulator\bin\win_x64\plugins
-
-if not exist "%ATS_PLUGINS%" (
-    echo Creating plugins directory...
-    mkdir "%ATS_PLUGINS%"
-    echo ✅ Directory created: %ATS_PLUGINS%
-    echo.
-)
-
-if not exist "RoadMasterPlugin\bin\Release\net6.0\RoadMasterPlugin.dll" (
-    echo ❌ Plugin DLL not found!
-    echo    Please run build.bat first to build the plugin.
+if not exist "RoadMasterPlugin\bin\Release\net6.0\win-x64\RoadMasterPlugin.exe" (
+    echo [!] Plugin EXE not found!
+    echo     Please run build.bat first to build the plugin.
     echo.
     pause
     exit /b 1
 )
 
-echo Copying files to ATS plugins folder...
-copy /Y "RoadMasterPlugin\bin\Release\net6.0\RoadMasterPlugin.dll" "%ATS_PLUGINS%\"
-copy /Y "RoadMasterPlugin\bin\Release\net6.0\RoadMasterPlugin.deps.json" "%ATS_PLUGINS%\"
-copy /Y "RoadMasterPlugin\bin\Release\net6.0\RoadMasterPlugin.runtimeconfig.json" "%ATS_PLUGINS%\"
-copy /Y "RoadMasterPlugin\bin\Release\net6.0\Newtonsoft.Json.dll" "%ATS_PLUGINS%\"
-copy /Y "RoadMasterPlugin\bin\Release\net6.0\config.json" "%ATS_PLUGINS%\"
-
+echo [OK] Plugin built successfully!
 echo.
 echo ========================================
-echo ✅ Installation complete!
+echo   IMPORTANT: This is a STANDALONE app
 echo ========================================
 echo.
-echo Plugin installed to:
-echo   %ATS_PLUGINS%
+echo The RoadMaster plugin is NOT a game plugin - it runs as a
+echo separate console application alongside ATS.
 echo.
-echo NEXT STEPS:
-echo   1. Edit config.json in the plugins folder
-echo   2. Replace "rm_YOUR_API_KEY_HERE" with your API key
-echo   3. Get your API key from http://localhost:3002/dashboard
-echo   4. Launch American Truck Simulator
-echo   5. Accept a job and start driving!
+echo Files are located at:
+echo   RoadMasterPlugin\bin\Release\net6.0\win-x64\
 echo.
-echo Config file location:
-echo   %ATS_PLUGINS%\config.json
+echo BEFORE RUNNING THE PLUGIN:
 echo.
+echo 1. Install RenCloud SDK in your ATS game folder:
+echo    D:\SteamLibrary\steamapps\common\American Truck Simulator\bin\win_x64\plugins\scs-telemetry.dll
+echo.
+echo    Download from: https://github.com/RenCloud/scs-sdk-plugin/releases
+echo.
+echo 2. Launch ATS and accept the SDK activation popup
+echo.
+echo 3. Edit config.json in the build folder:
+echo    RoadMasterPlugin\bin\Release\net6.0\win-x64\config.json
+echo.
+echo 4. Replace "rm_YOUR_API_KEY_HERE" with your API key
+echo    Get your API key from http://localhost:3000/settings
+echo.
+echo 5. Run the plugin:
+echo    RoadMasterPlugin\bin\Release\net6.0\win-x64\RoadMasterPlugin.exe
+echo.
+echo ========================================
 pause

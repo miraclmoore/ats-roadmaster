@@ -1,6 +1,7 @@
 using System.Text;
 using Newtonsoft.Json;
 using RoadMasterPlugin.Models;
+using SCSSdkClient.Object;
 
 namespace RoadMasterPlugin;
 
@@ -104,24 +105,31 @@ public class ApiClient
     {
         try
         {
+            // Get truck position from RenCloud SDK (DPlacement has Position which is DVector)
+            var position = data.TruckValues.Positioning.TruckPosition?.Position;
+
             var payload = new
             {
                 api_key = apiKey,
                 job_id = jobId,
-                speed = data.Speed * 2.23694, // m/s to mph
-                rpm = data.EngineRpm,
-                gear = data.Gear,
-                fuel_current = data.FuelAmount * 0.264172, // liters to gallons
-                fuel_capacity = data.FuelCapacity * 0.264172,
-                engine_damage = data.EngineDamage * 100,
-                transmission_damage = data.TransmissionDamage * 100,
-                chassis_damage = data.ChassisDamage * 100,
-                wheels_damage = data.WheelsDamage * 100,
-                cabin_damage = data.CabinDamage * 100,
-                cargo_damage = data.CargoDamage * 100,
-                position_x = data.PositionX,
-                position_y = data.PositionY,
-                position_z = data.PositionZ
+                // Speed is in kph, convert to mph
+                speed = data.TruckValues.CurrentValues.DashboardValues.Speed.Kph * 0.621371,
+                rpm = (int)data.TruckValues.CurrentValues.DashboardValues.RPM,
+                gear = data.TruckValues.CurrentValues.DashboardValues.GearDashboards,
+                // Fuel is in liters, convert to gallons
+                fuel_current = data.TruckValues.CurrentValues.DashboardValues.FuelValue.Amount * 0.264172,
+                fuel_capacity = data.TruckValues.ConstantsValues.CapacityValues.Fuel * 0.264172,
+                // Damage values are 0-1, convert to percentage
+                engine_damage = data.TruckValues.CurrentValues.DamageValues.Engine * 100,
+                transmission_damage = data.TruckValues.CurrentValues.DamageValues.Transmission * 100,
+                chassis_damage = data.TruckValues.CurrentValues.DamageValues.Chassis * 100,
+                wheels_damage = data.TruckValues.CurrentValues.DamageValues.WheelsAvg * 100,
+                cabin_damage = data.TruckValues.CurrentValues.DamageValues.Cabin * 100,
+                cargo_damage = data.JobValues.CargoValues.CargoDamage * 100,
+                // Position (DVector has X, Y, Z)
+                position_x = position?.X ?? 0,
+                position_y = position?.Y ?? 0,
+                position_z = position?.Z ?? 0
             };
 
             var json = JsonConvert.SerializeObject(payload);
