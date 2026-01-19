@@ -58,13 +58,15 @@ export default function LiveTelemetryPage() {
 
     setTelemetryHistory(prev => {
       const maxHistory = 60; // Keep last 60 data points
-      const fuelConsumption = telemetry.speed > 5 
-        ? telemetry.speed / Math.max(0.1, telemetry.fuel_current * 0.1)
+      const speed = telemetry.speed || 0;
+      const fuelCurrent = telemetry.fuel_current || 1;
+      const fuelConsumption = speed > 5 
+        ? speed / Math.max(0.1, fuelCurrent * 0.1)
         : 0;
 
       return {
-        speed: [...prev.speed, telemetry.speed].slice(-maxHistory),
-        rpm: [...prev.rpm, telemetry.rpm].slice(-maxHistory),
+        speed: [...prev.speed, speed].slice(-maxHistory),
+        rpm: [...prev.rpm, telemetry.rpm || 0].slice(-maxHistory),
         fuelConsumption: [...prev.fuelConsumption, fuelConsumption].slice(-maxHistory),
       };
     });
@@ -73,22 +75,31 @@ export default function LiveTelemetryPage() {
   useEffect(() => {
     // Fetch latest telemetry with job data
     const fetchLatest = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
 
-      const { data } = await supabase
-        .from('telemetry')
-        .select('*, jobs(*)')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+        const { data, error } = await supabase
+          .from('telemetry')
+          .select('*, jobs(*)')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
 
-      if (data) {
-        setTelemetry(data);
-        // @ts-ignore - jobs relation
-        setJob(data.jobs || null);
-        setIsConnected(true);
+        if (error) {
+          console.error('Telemetry fetch error:', error);
+          return;
+        }
+
+        if (data) {
+          setTelemetry(data);
+          // @ts-ignore - jobs relation
+          setJob(data.jobs || null);
+          setIsConnected(true);
+        }
+      } catch (err) {
+        console.error('Fetch error:', err);
       }
     };
 
