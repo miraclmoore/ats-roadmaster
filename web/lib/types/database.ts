@@ -112,6 +112,16 @@ export interface Database {
           position_y: number | null
           position_z: number | null
           game_time: string | null
+          cruise_control_speed: number | null
+          cruise_control_enabled: boolean | null
+          parking_brake: boolean | null
+          motor_brake: boolean | null
+          retarder_level: number | null
+          air_pressure: number | null
+          brake_temperature: number | null
+          navigation_distance: number | null
+          navigation_time: number | null
+          speed_limit: number | null
           created_at: string
         }
         Insert: {
@@ -133,6 +143,16 @@ export interface Database {
           position_y?: number | null
           position_z?: number | null
           game_time?: string | null
+          cruise_control_speed?: number | null
+          cruise_control_enabled?: boolean | null
+          parking_brake?: boolean | null
+          motor_brake?: boolean | null
+          retarder_level?: number | null
+          air_pressure?: number | null
+          brake_temperature?: number | null
+          navigation_distance?: number | null
+          navigation_time?: number | null
+          speed_limit?: number | null
           created_at?: string
         }
         Update: {
@@ -153,6 +173,16 @@ export interface Database {
           position_x?: number | null
           position_y?: number | null
           position_z?: number | null
+          cruise_control_speed?: number | null
+          cruise_control_enabled?: boolean | null
+          parking_brake?: boolean | null
+          motor_brake?: boolean | null
+          retarder_level?: number | null
+          air_pressure?: number | null
+          brake_temperature?: number | null
+          navigation_distance?: number | null
+          navigation_time?: number | null
+          speed_limit?: number | null
           game_time?: string | null
           created_at?: string
         }

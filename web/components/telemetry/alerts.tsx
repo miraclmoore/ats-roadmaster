@@ -21,7 +21,7 @@ export function Alerts({ telemetry, job }: AlertsProps) {
   const alerts: Alert[] = [];
 
   // Critical alerts
-  if (telemetry.fuel_current / telemetry.fuel_capacity < 0.15) {
+  if ((telemetry.fuel_current || 0) / (telemetry.fuel_capacity || 1) < 0.15) {
     alerts.push({
       id: 'low-fuel',
       type: 'danger',
@@ -34,7 +34,7 @@ export function Alerts({ telemetry, job }: AlertsProps) {
     });
   }
 
-  if (telemetry.engine_damage > 10) {
+  if ((telemetry.engine_damage || 0) > 10) {
     alerts.push({
       id: 'engine-damage',
       type: 'danger',
@@ -48,7 +48,7 @@ export function Alerts({ telemetry, job }: AlertsProps) {
   }
 
   // Warning alerts
-  if (telemetry.speed_limit && telemetry.speed > telemetry.speed_limit + 5) {
+  if (telemetry.speed_limit && (telemetry.speed || 0) > telemetry.speed_limit + 5) {
     alerts.push({
       id: 'speeding',
       type: 'warning',

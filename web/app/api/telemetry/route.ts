@@ -65,6 +65,20 @@ export async function POST(req: NextRequest) {
 
       // Game time
       game_time: data.game_time,
+
+      // Enhanced telemetry - Cruise Control & Driver Assists
+      cruise_control_speed: data.cruise_control_speed,
+      cruise_control_enabled: data.cruise_control_enabled,
+      parking_brake: data.parking_brake,
+      motor_brake: data.motor_brake,
+      retarder_level: data.retarder_level,
+      air_pressure: data.air_pressure,
+      brake_temperature: data.brake_temperature,
+
+      // Navigation & Route Advisor
+      navigation_distance: data.navigation_distance,
+      navigation_time: data.navigation_time,
+      speed_limit: data.speed_limit,
     });
 
     if (error) {

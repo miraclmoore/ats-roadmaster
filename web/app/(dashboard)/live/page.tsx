@@ -193,7 +193,7 @@ export default function LiveTelemetryPage() {
     );
   }
 
-  const fuelPercentage = (telemetry.fuel_current / telemetry.fuel_capacity) * 100;
+  const fuelPercentage = ((telemetry.fuel_current || 0) / (telemetry.fuel_capacity || 1)) * 100;
 
   return (
     <div className="space-y-3">
@@ -243,7 +243,7 @@ export default function LiveTelemetryPage() {
               size="md"
               color="primary"
               variant={currentProfile.gaugeStyle}
-              cruiseControlSpeed={telemetry.cruise_control_enabled ? telemetry.cruise_control_speed : undefined}
+              cruiseControlSpeed={telemetry.cruise_control_enabled ? (telemetry.cruise_control_speed || undefined) : undefined}
             />
           </div>
         )}

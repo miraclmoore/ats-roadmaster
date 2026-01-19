@@ -129,7 +129,20 @@ public class ApiClient
                 // Position (DVector has X, Y, Z)
                 position_x = position?.X ?? 0,
                 position_y = position?.Y ?? 0,
-                position_z = position?.Z ?? 0
+                position_z = position?.Z ?? 0,
+                // Enhanced telemetry - Cruise Control
+                cruise_control_speed = data.TruckValues.CurrentValues.DashboardValues.CruiseControlSpeed.Kph * 0.621371,
+                cruise_control_enabled = data.TruckValues.CurrentValues.DashboardValues.CruiseControl,
+                // Brake and Assist Systems
+                parking_brake = data.TruckValues.CurrentValues.MotorValues.BrakeValues.ParkingBrake,
+                motor_brake = data.TruckValues.CurrentValues.MotorValues.BrakeValues.MotorBrake,
+                retarder_level = (int)data.TruckValues.CurrentValues.MotorValues.BrakeValues.RetarderLevel,
+                air_pressure = data.TruckValues.CurrentValues.MotorValues.BrakeValues.AirPressure,
+                brake_temperature = data.TruckValues.CurrentValues.MotorValues.BrakeValues.Temperature,
+                // Navigation and Route Advisor
+                navigation_distance = data.NavigationValues.NavigationDistance,
+                navigation_time = data.NavigationValues.NavigationTime,
+                speed_limit = data.NavigationValues.SpeedLimit.Kph * 0.621371
             };
 
             var json = JsonConvert.SerializeObject(payload);
