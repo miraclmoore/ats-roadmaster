@@ -44,24 +44,41 @@ export default function LiveTelemetryPage() {
     fetchLatest();
 
     // Subscribe to real-time updates
-    const channel = supabase
-      .channel('telemetry-updates')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'telemetry',
-        },
-        (payload) => {
-          setTelemetry(payload.new as TelemetryData);
-          setIsConnected(true);
-        }
-      )
-      .subscribe();
+    const setupRealtime = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const channel = supabase
+        .channel('telemetry-updates')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'telemetry',
+            filter: `user_id=eq.${user.id}`,
+          },
+          (payload) => {
+            setTelemetry(payload.new as TelemetryData);
+            setIsConnected(true);
+          }
+        )
+        .subscribe();
+
+      return channel;
+    };
+
+    let channel: ReturnType<typeof supabase.channel> | undefined;
+    setupRealtime().then(ch => { channel = ch; });
+
+    // Fallback polling every 1 second for real-time feel
+    const pollInterval = setInterval(fetchLatest, 1000);
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
+      clearInterval(pollInterval);
     };
   }, []);
 
