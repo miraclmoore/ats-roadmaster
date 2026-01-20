@@ -75,12 +75,12 @@ export function Alerts({ telemetry, job }: AlertsProps) {
   }
 
   // Info alerts
-  if (job && telemetry.navigation_time) {
+  if (job && telemetry.navigation_time && job.deadline) {
     const hoursRemaining = telemetry.navigation_time / 60;
     const deadline = new Date(job.deadline);
     const now = new Date();
     const hoursUntilDeadline = (deadline.getTime() - now.getTime()) / (1000 * 60 * 60);
-    
+
     if (hoursRemaining > hoursUntilDeadline - 1) {
       alerts.push({
         id: 'late-delivery',

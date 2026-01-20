@@ -9,9 +9,11 @@ import { DriverAssists } from '@/components/telemetry/driver-assists';
 import { TrendCards } from '@/components/telemetry/trend-cards';
 import { ProfileSelector, PRESET_PROFILES, DashboardProfile } from '@/components/telemetry/profile-selector';
 import { ProfileCustomizer } from '@/components/telemetry/profile-customizer';
+import { useFocusMode } from '@/lib/contexts/focus-mode';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Database } from '@/lib/types/database';
+import { cn } from '@/lib/utils';
 
 type Telemetry = Database['public']['Tables']['telemetry']['Row'];
 type Job = Database['public']['Tables']['jobs']['Row'];
@@ -34,19 +36,32 @@ export default function LiveTelemetryPage() {
     rpm: [],
     fuelConsumption: [],
   });
-  
+
+  const { isFocusMode, isGlanceMode, mode } = useFocusMode();
   const supabase = createClient();
+
+  // Determine gauge size based on mode
+  const getGaugeSize = (baseSize: 'sm' | 'md' | 'lg'): 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' => {
+    if (isGlanceMode) return 'lg'; // Glance mode uses large gauges
+    if (isFocusMode) {
+      // Focus mode increases sizes
+      if (baseSize === 'sm') return 'lg';
+      if (baseSize === 'md') return 'xl';
+      if (baseSize === 'lg') return '2xl';
+    }
+    return baseSize;
+  };
 
   // Load saved profile and custom profiles from localStorage
   useEffect(() => {
     const savedProfile = localStorage.getItem('dashboard-profile');
     const savedCustomProfiles = localStorage.getItem('custom-profiles');
-    
+
     if (savedProfile) {
       const profile = JSON.parse(savedProfile);
       setCurrentProfile(profile);
     }
-    
+
     if (savedCustomProfiles) {
       setCustomProfiles(JSON.parse(savedCustomProfiles));
     }
@@ -60,7 +75,7 @@ export default function LiveTelemetryPage() {
       const maxHistory = 60; // Keep last 60 data points
       const speed = telemetry.speed || 0;
       const fuelCurrent = telemetry.fuel_current || 1;
-      const fuelConsumption = speed > 5 
+      const fuelConsumption = speed > 5
         ? speed / Math.max(0.1, fuelCurrent * 0.1)
         : 0;
 
@@ -132,7 +147,7 @@ export default function LiveTelemetryPage() {
                 .select('*')
                 .eq('id', newTelemetry.job_id)
                 .single();
-              
+
               if (jobData) {
                 setJob(jobData);
               }
@@ -174,23 +189,29 @@ export default function LiveTelemetryPage() {
   };
 
   const isCardVisible = (cardId: string) => {
+    // In glance mode, only show essential cards
+    if (isGlanceMode) {
+      return ['instrument-cluster', 'route-advisor'].includes(cardId);
+    }
     return currentProfile.visibleCards.includes(cardId);
   };
 
 
   if (!isConnected || !telemetry) {
     return (
-      <div className="space-y-3">
-        <PageHeader
-          title="Live Telemetry"
-          compact
-          status={
-            <div className="flex items-center gap-2 text-xs">
-              <div className="w-2 h-2 rounded-full bg-slate-500" />
-              <span className="text-slate-600 dark:text-slate-400 hidden sm:inline">Disconnected</span>
-            </div>
-          }
-        />
+      <div className={cn("space-y-3", isFocusMode && "space-y-2")}>
+        {!isFocusMode && !isGlanceMode && (
+          <PageHeader
+            title="Live Telemetry"
+            compact
+            status={
+              <div className="flex items-center gap-2 text-xs">
+                <div className="w-2 h-2 rounded-full bg-slate-500" />
+                <span className="text-slate-600 dark:text-slate-400 hidden sm:inline">Disconnected</span>
+              </div>
+            }
+          />
+        )}
         <EmptyState
           icon={
             <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,28 +227,93 @@ export default function LiveTelemetryPage() {
 
   const fuelPercentage = ((telemetry.fuel_current || 0) / (telemetry.fuel_capacity || 1)) * 100;
 
+  // Glance Mode - Super minimal single-card view
+  if (isGlanceMode) {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-100px)]">
+        <div className="bg-card border-2 border-border rounded-xl p-6 max-w-md w-full">
+          {/* Status indicator */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-[rgb(var(--profit))] animate-pulse" />
+              <span className="text-xs text-muted-foreground">LIVE</span>
+            </div>
+            {job && (
+              <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                {job.source_city} → {job.destination_city}
+              </span>
+            )}
+          </div>
+
+          {/* Main speed display */}
+          <div className="text-center mb-6">
+            <div className="text-7xl font-bold metric-value text-primary">
+              {Math.round(telemetry.speed || 0)}
+            </div>
+            <div className="text-lg text-muted-foreground uppercase tracking-wide">mph</div>
+          </div>
+
+          {/* Quick stats row */}
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <div className="text-2xl font-bold metric-value text-[rgb(var(--fuel))]">
+                {Math.round(fuelPercentage)}%
+              </div>
+              <div className="text-xs text-muted-foreground uppercase">Fuel</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold metric-value text-[rgb(var(--profit))]">
+                {Math.round(100 - (telemetry.engine_damage || 0))}%
+              </div>
+              <div className="text-xs text-muted-foreground uppercase">Health</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold metric-value text-[rgb(var(--income))]">
+                {job ? `${Math.round((telemetry.navigation_distance || 0) * 0.000621371)}mi` : '--'}
+              </div>
+              <div className="text-xs text-muted-foreground uppercase">Distance</div>
+            </div>
+          </div>
+
+          {/* Profit estimate if on job */}
+          {job && (
+            <div className="mt-4 pt-4 border-t border-border text-center">
+              <div className="text-xl font-bold metric-value text-[rgb(var(--profit))]">
+                +${Math.round((job.income || 0) * 0.6).toLocaleString()}
+              </div>
+              <div className="text-xs text-muted-foreground uppercase">Est. Profit</div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-3">
-      <PageHeader
-        title="Live Telemetry"
-        compact
-        status={
-          <div className="flex items-center gap-2 text-xs">
-            <div className="w-2 h-2 rounded-full bg-[rgb(var(--profit))] animate-pulse" />
-            <span className="text-slate-600 dark:text-slate-400 hidden sm:inline">Connected</span>
-          </div>
-        }
-        action={
-          <div className="flex items-center gap-2">
-            <ProfileSelector
-              currentProfile={currentProfile}
-              customProfiles={customProfiles}
-              onProfileChange={handleProfileChange}
-              onCustomize={() => setIsCustomizerOpen(true)}
-            />
-          </div>
-        }
-      />
+    <div className={cn("space-y-3", isFocusMode && "space-y-2")}>
+      {/* Header - hidden in focus mode */}
+      {!isFocusMode && (
+        <PageHeader
+          title="Live Telemetry"
+          compact
+          status={
+            <div className="flex items-center gap-2 text-xs">
+              <div className="w-2 h-2 rounded-full bg-[rgb(var(--profit))] animate-pulse" />
+              <span className="text-slate-600 dark:text-slate-400 hidden sm:inline">Connected</span>
+            </div>
+          }
+          action={
+            <div className="flex items-center gap-2">
+              <ProfileSelector
+                currentProfile={currentProfile}
+                customProfiles={customProfiles}
+                onProfileChange={handleProfileChange}
+                onCustomize={() => setIsCustomizerOpen(true)}
+              />
+            </div>
+          }
+        />
+      )}
 
       {/* Profile Customizer Modal */}
       <ProfileCustomizer
@@ -237,145 +323,277 @@ export default function LiveTelemetryPage() {
         onSave={handleSaveCustomProfile}
       />
 
-      {/* Alerts */}
+      {/* Alerts - always show but more prominent in focus mode */}
       <Alerts telemetry={telemetry} job={job} />
 
-      {/* Responsive Grid Layout */}
-      <div className="grid gap-3 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-        
-        {/* Speed Gauge */}
-        {isCardVisible('instrument-cluster') && (
-          <div className="md:col-span-1 lg:col-span-1 xl:col-span-1">
-            <Gauge
-              value={telemetry.speed}
-              max={80}
-              label="Speed"
-              unit="mph"
-              size="md"
-              color="primary"
-              variant={currentProfile.gaugeStyle}
-              cruiseControlSpeed={telemetry.cruise_control_enabled ? (telemetry.cruise_control_speed || undefined) : undefined}
-            />
+      {/* Focus Mode Layout - Truck Dashboard Inspired */}
+      {isFocusMode ? (
+        <div className="space-y-2">
+          {/* Main Gauges Row - Large and centered */}
+          <div className="flex justify-center items-end gap-4 flex-wrap">
+            {isCardVisible('instrument-cluster') && (
+              <>
+                <Gauge
+                  value={telemetry.speed || 0}
+                  max={80}
+                  label="Speed"
+                  unit="mph"
+                  size="2xl"
+                  color="primary"
+                  variant={currentProfile.gaugeStyle}
+                  cruiseControlSpeed={telemetry.cruise_control_enabled ? (telemetry.cruise_control_speed || undefined) : undefined}
+                />
+                <Gauge
+                  value={telemetry.rpm || 0}
+                  max={3000}
+                  label="Engine RPM"
+                  unit="rpm"
+                  size="xl"
+                  color={(telemetry.rpm || 0) > 2400 ? 'damage' : 'income'}
+                  variant={currentProfile.gaugeStyle}
+                  zones={[
+                    { start: 2000, end: 2400, color: 'rgb(234, 179, 8)' },
+                    { start: 2400, end: 3000, color: 'rgb(239, 68, 68)' }
+                  ]}
+                />
+                <Gauge
+                  value={fuelPercentage}
+                  max={100}
+                  label="Fuel Level"
+                  unit="%"
+                  size="xl"
+                  color={fuelPercentage < 20 ? 'damage' : 'fuel'}
+                  variant={currentProfile.gaugeStyle}
+                  zones={[
+                    { start: 0, end: 20, color: 'rgb(239, 68, 68)' }
+                  ]}
+                />
+              </>
+            )}
           </div>
-        )}
 
-        {/* RPM Gauge */}
-        {isCardVisible('instrument-cluster') && (
-          <div className="md:col-span-1 lg:col-span-1 xl:col-span-1">
-            <Gauge
-              value={telemetry.rpm}
-              max={3000}
-              label="Engine RPM"
-              unit="rpm"
-              size="md"
-              color={telemetry.rpm > 2400 ? 'damage' : 'income'}
-              variant={currentProfile.gaugeStyle}
-              zones={[
-                { start: 2000, end: 2400, color: 'rgb(234, 179, 8)' },
-                { start: 2400, end: 3000, color: 'rgb(239, 68, 68)' }
-              ]}
-            />
-          </div>
-        )}
-
-        {/* Fuel Gauge */}
-        {isCardVisible('instrument-cluster') && (
-          <div className="md:col-span-1 lg:col-span-1 xl:col-span-1">
-            <Gauge
-              value={fuelPercentage}
-              max={100}
-              label="Fuel Level"
-              unit="%"
-              size="md"
-              color={fuelPercentage < 20 ? 'damage' : 'fuel'}
-              variant={currentProfile.gaugeStyle}
-              zones={[
-                { start: 0, end: 20, color: 'rgb(239, 68, 68)' }
-              ]}
-            />
-          </div>
-        )}
-
-        {/* Route Advisor Card */}
-        {isCardVisible('route-advisor') && (
-          <div className="md:col-span-3 lg:col-span-1 xl:col-span-2 row-span-2">
-            <RouteAdvisorCard telemetry={telemetry} job={job} />
-          </div>
-        )}
-
-        {/* Driver Assists */}
-        {isCardVisible('driver-assists') && (
-          <div className="md:col-span-3 lg:col-span-2 xl:col-span-3">
-            <DriverAssists telemetry={telemetry} />
-          </div>
-        )}
-
-        {/* Combined Vehicle & Fuel Status */}
-        {(isCardVisible('vehicle-condition') || isCardVisible('fuel-system')) && (
-          <div className="md:col-span-3 lg:col-span-2 xl:col-span-3 bg-card border-2 border-border rounded-lg p-3 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-[rgb(var(--damage))]" />
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {isCardVisible('vehicle-condition') && (
-                <>
-                  <div className="flex flex-col items-center">
-                    <Gauge
-                      value={Math.max(0, 100 - telemetry.engine_damage)}
-                      max={100}
-                      label="Engine"
-                      unit="%"
-                      size="sm"
-                      color={telemetry.engine_damage > 10 ? 'damage' : 'profit'}
-                      variant={currentProfile.gaugeStyle}
-                    />
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <Gauge
-                      value={Math.max(0, 100 - telemetry.cargo_damage)}
-                      max={100}
-                      label="Cargo"
-                      unit="%"
-                      size="sm"
-                      color={telemetry.cargo_damage > 5 ? 'damage' : 'profit'}
-                      variant={currentProfile.gaugeStyle}
-                    />
-                  </div>
-                </>
-              )}
-              {isCardVisible('fuel-system') && (
-                <>
-                  <div className="flex flex-col justify-center space-y-1 border-l border-border pl-3">
-                    <div className="text-xs text-muted-foreground">Fuel</div>
-                    <div className="text-lg font-bold text-foreground">{Math.round(telemetry.fuel_current)} gal</div>
-                    <div className="text-xs text-muted-foreground">of {Math.round(telemetry.fuel_capacity)}</div>
-                  </div>
-                  <div className="flex flex-col justify-center space-y-1 border-l border-border pl-3">
-                    <div className="text-xs text-muted-foreground">Range</div>
-                    <div className={`text-lg font-bold ${
-                      fuelPercentage < 20 ? 'text-[rgb(var(--damage))]' : 'text-[rgb(var(--fuel))]'
-                    }`}>
-                      {Math.round(telemetry.fuel_current * 6)} mi
+          {/* Route Info Strip */}
+          {isCardVisible('route-advisor') && job && (
+            <div className="bg-card/80 backdrop-blur border border-border rounded-lg p-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div>
+                    <div className="text-sm text-muted-foreground uppercase tracking-wide">Route</div>
+                    <div className="text-lg font-bold text-foreground">
+                      {job.source_city} → {job.destination_city}
                     </div>
-                    <div className="text-xs text-muted-foreground">{Math.round(fuelPercentage)}%</div>
                   </div>
-                </>
-              )}
+                  <div className="border-l border-border pl-4">
+                    <div className="text-sm text-muted-foreground uppercase tracking-wide">Cargo</div>
+                    <div className="text-lg font-bold text-foreground">{job.cargo_type}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-6">
+                  <div className="text-right">
+                    <div className="text-sm text-muted-foreground uppercase tracking-wide">Distance</div>
+                    <div className="text-2xl font-bold metric-value text-[rgb(var(--income))]">
+                      {Math.round((telemetry.navigation_distance || 0) * 0.000621371)} mi
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm text-muted-foreground uppercase tracking-wide">Est. Profit</div>
+                    <div className="text-2xl font-bold metric-value text-[rgb(var(--profit))]">
+                      +${Math.round((job.income || 0) * 0.6).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Performance Trends - shown only if visible in profile and we have history */}
-        {isCardVisible('trends') && telemetryHistory.speed.length > 10 && (
-          <div className="md:col-span-3 lg:col-span-4 xl:col-span-6">
-            <TrendCards 
-              history={telemetryHistory}
-              currentSpeed={telemetry.speed}
-              currentRpm={telemetry.rpm}
-              currentFuel={telemetry.speed > 5 ? telemetry.speed / Math.max(0.1, telemetry.fuel_current * 0.1) : 0}
-            />
+          {/* Secondary Info Row - Compact */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {isCardVisible('vehicle-condition') && (
+              <>
+                <div className="bg-card/60 border border-border rounded-lg p-3 text-center">
+                  <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Engine</div>
+                  <div className={cn(
+                    "text-2xl font-bold metric-value",
+                    (telemetry.engine_damage || 0) > 10 ? "text-[rgb(var(--damage))]" : "text-[rgb(var(--profit))]"
+                  )}>
+                    {Math.round(100 - (telemetry.engine_damage || 0))}%
+                  </div>
+                </div>
+                <div className="bg-card/60 border border-border rounded-lg p-3 text-center">
+                  <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Cargo</div>
+                  <div className={cn(
+                    "text-2xl font-bold metric-value",
+                    (telemetry.cargo_damage || 0) > 5 ? "text-[rgb(var(--damage))]" : "text-[rgb(var(--profit))]"
+                  )}>
+                    {Math.round(100 - (telemetry.cargo_damage || 0))}%
+                  </div>
+                </div>
+              </>
+            )}
+            {isCardVisible('fuel-system') && (
+              <>
+                <div className="bg-card/60 border border-border rounded-lg p-3 text-center">
+                  <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Fuel</div>
+                  <div className="text-2xl font-bold metric-value text-[rgb(var(--fuel))]">
+                    {Math.round(telemetry.fuel_current || 0)} gal
+                  </div>
+                </div>
+                <div className="bg-card/60 border border-border rounded-lg p-3 text-center">
+                  <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Range</div>
+                  <div className={cn(
+                    "text-2xl font-bold metric-value",
+                    fuelPercentage < 20 ? "text-[rgb(var(--damage))]" : "text-[rgb(var(--fuel))]"
+                  )}>
+                    {Math.round((telemetry.fuel_current || 0) * 6)} mi
+                  </div>
+                </div>
+              </>
+            )}
           </div>
-        )}
-      </div>
+
+          {/* Driver Assists - Compact in focus mode */}
+          {isCardVisible('driver-assists') && (
+            <DriverAssists telemetry={telemetry} compact />
+          )}
+        </div>
+      ) : (
+        /* Standard Full Mode Layout */
+        <div className="grid gap-3 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+
+          {/* Speed Gauge */}
+          {isCardVisible('instrument-cluster') && (
+            <div className="md:col-span-1 lg:col-span-1 xl:col-span-1">
+              <Gauge
+                value={telemetry.speed || 0}
+                max={80}
+                label="Speed"
+                unit="mph"
+                size="md"
+                color="primary"
+                variant={currentProfile.gaugeStyle}
+                cruiseControlSpeed={telemetry.cruise_control_enabled ? (telemetry.cruise_control_speed || undefined) : undefined}
+              />
+            </div>
+          )}
+
+          {/* RPM Gauge */}
+          {isCardVisible('instrument-cluster') && (
+            <div className="md:col-span-1 lg:col-span-1 xl:col-span-1">
+              <Gauge
+                value={telemetry.rpm || 0}
+                max={3000}
+                label="Engine RPM"
+                unit="rpm"
+                size="md"
+                color={(telemetry.rpm || 0) > 2400 ? 'damage' : 'income'}
+                variant={currentProfile.gaugeStyle}
+                zones={[
+                  { start: 2000, end: 2400, color: 'rgb(234, 179, 8)' },
+                  { start: 2400, end: 3000, color: 'rgb(239, 68, 68)' }
+                ]}
+              />
+            </div>
+          )}
+
+          {/* Fuel Gauge */}
+          {isCardVisible('instrument-cluster') && (
+            <div className="md:col-span-1 lg:col-span-1 xl:col-span-1">
+              <Gauge
+                value={fuelPercentage}
+                max={100}
+                label="Fuel Level"
+                unit="%"
+                size="md"
+                color={fuelPercentage < 20 ? 'damage' : 'fuel'}
+                variant={currentProfile.gaugeStyle}
+                zones={[
+                  { start: 0, end: 20, color: 'rgb(239, 68, 68)' }
+                ]}
+              />
+            </div>
+          )}
+
+          {/* Route Advisor Card */}
+          {isCardVisible('route-advisor') && (
+            <div className="md:col-span-3 lg:col-span-1 xl:col-span-2 row-span-2">
+              <RouteAdvisorCard telemetry={telemetry} job={job} />
+            </div>
+          )}
+
+          {/* Driver Assists */}
+          {isCardVisible('driver-assists') && (
+            <div className="md:col-span-3 lg:col-span-2 xl:col-span-3">
+              <DriverAssists telemetry={telemetry} />
+            </div>
+          )}
+
+          {/* Combined Vehicle & Fuel Status */}
+          {(isCardVisible('vehicle-condition') || isCardVisible('fuel-system')) && (
+            <div className="md:col-span-3 lg:col-span-2 xl:col-span-3 bg-card border-2 border-border rounded-lg p-3 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-[rgb(var(--damage))]" />
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {isCardVisible('vehicle-condition') && (
+                  <>
+                    <div className="flex flex-col items-center">
+                      <Gauge
+                        value={Math.max(0, 100 - (telemetry.engine_damage || 0))}
+                        max={100}
+                        label="Engine"
+                        unit="%"
+                        size="sm"
+                        color={(telemetry.engine_damage || 0) > 10 ? 'damage' : 'profit'}
+                        variant={currentProfile.gaugeStyle}
+                      />
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <Gauge
+                        value={Math.max(0, 100 - (telemetry.cargo_damage || 0))}
+                        max={100}
+                        label="Cargo"
+                        unit="%"
+                        size="sm"
+                        color={(telemetry.cargo_damage || 0) > 5 ? 'damage' : 'profit'}
+                        variant={currentProfile.gaugeStyle}
+                      />
+                    </div>
+                  </>
+                )}
+                {isCardVisible('fuel-system') && (
+                  <>
+                    <div className="flex flex-col justify-center space-y-1 border-l border-border pl-3">
+                      <div className="text-xs text-muted-foreground">Fuel</div>
+                      <div className="text-lg font-bold text-foreground">{Math.round(telemetry.fuel_current || 0)} gal</div>
+                      <div className="text-xs text-muted-foreground">of {Math.round(telemetry.fuel_capacity || 0)}</div>
+                    </div>
+                    <div className="flex flex-col justify-center space-y-1 border-l border-border pl-3">
+                      <div className="text-xs text-muted-foreground">Range</div>
+                      <div className={`text-lg font-bold ${
+                        fuelPercentage < 20 ? 'text-[rgb(var(--damage))]' : 'text-[rgb(var(--fuel))]'
+                      }`}>
+                        {Math.round((telemetry.fuel_current || 0) * 6)} mi
+                      </div>
+                      <div className="text-xs text-muted-foreground">{Math.round(fuelPercentage)}%</div>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Performance Trends - shown only if visible in profile and we have history */}
+          {isCardVisible('trends') && telemetryHistory.speed.length > 10 && (
+            <div className="md:col-span-3 lg:col-span-4 xl:col-span-6">
+              <TrendCards
+                history={telemetryHistory}
+                currentSpeed={telemetry.speed || 0}
+                currentRpm={telemetry.rpm || 0}
+                currentFuel={(telemetry.speed || 0) > 5 ? (telemetry.speed || 0) / Math.max(0.1, (telemetry.fuel_current || 1) * 0.1) : 0}
+              />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

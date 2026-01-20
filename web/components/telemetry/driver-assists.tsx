@@ -6,11 +6,82 @@ type Telemetry = Database['public']['Tables']['telemetry']['Row'];
 
 interface DriverAssistsProps {
   telemetry: Telemetry;
+  compact?: boolean;
 }
 
-export function DriverAssists({ telemetry }: DriverAssistsProps) {
+export function DriverAssists({ telemetry, compact = false }: DriverAssistsProps) {
   const isMoving = (telemetry.speed || 0) > 1;
   const lowAirPressure = telemetry.air_pressure && telemetry.air_pressure < 90;
+
+  // Compact mode - horizontal strip with just icons
+  if (compact) {
+    return (
+      <div className="bg-card/60 border border-border rounded-lg p-2">
+        <div className="flex items-center justify-center gap-4 flex-wrap">
+          {/* Cruise Control */}
+          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+            telemetry.cruise_control_enabled
+              ? 'bg-blue-500/20 border border-blue-500'
+              : 'bg-slate-800/30'
+          }`}>
+            <svg className={`w-4 h-4 ${telemetry.cruise_control_enabled ? 'text-blue-400' : 'text-slate-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <span className={`text-sm font-bold ${telemetry.cruise_control_enabled ? 'text-blue-400' : 'text-slate-600'}`}>
+              {telemetry.cruise_control_enabled ? `CC ${Math.round(telemetry.cruise_control_speed || 0)}` : 'CC'}
+            </span>
+          </div>
+
+          {/* Parking Brake */}
+          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+            telemetry.parking_brake
+              ? isMoving ? 'bg-red-500/20 border border-red-500 animate-pulse' : 'bg-yellow-500/20 border border-yellow-500'
+              : 'bg-slate-800/30'
+          }`}>
+            <svg className={`w-4 h-4 ${telemetry.parking_brake ? (isMoving ? 'text-red-400' : 'text-yellow-400') : 'text-slate-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span className={`text-sm font-bold ${telemetry.parking_brake ? (isMoving ? 'text-red-400' : 'text-yellow-400') : 'text-slate-600'}`}>
+              PB
+            </span>
+          </div>
+
+          {/* Motor Brake */}
+          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+            telemetry.motor_brake ? 'bg-blue-500/20 border border-blue-500' : 'bg-slate-800/30'
+          }`}>
+            <svg className={`w-4 h-4 ${telemetry.motor_brake ? 'text-blue-400' : 'text-slate-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span className={`text-sm font-bold ${telemetry.motor_brake ? 'text-blue-400' : 'text-slate-600'}`}>
+              MB
+            </span>
+          </div>
+
+          {/* Retarder */}
+          {(telemetry.retarder_level || 0) > 0 && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-500/20 border border-purple-500">
+              <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              <span className="text-sm font-bold text-purple-400">RT {telemetry.retarder_level}</span>
+            </div>
+          )}
+
+          {/* Air Pressure - only show if low */}
+          {lowAirPressure && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/20 border border-red-500 animate-pulse">
+              <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+              </svg>
+              <span className="text-sm font-bold text-red-400">AIR {Math.round(telemetry.air_pressure || 0)}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-card border-2 border-border rounded-lg p-3 relative overflow-hidden">

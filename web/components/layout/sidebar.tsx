@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
+import { cn } from '@/lib/utils';
 
 interface NavItem {
   href: string;
@@ -68,11 +69,21 @@ const navItems: NavItem[] = [
   },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+  hidden?: boolean;
+}
+
+export function Sidebar({ isOpen = false, onClose, hidden = false }: SidebarProps) {
   const pathname = usePathname();
 
-  return (
-    <aside className="hidden md:flex md:flex-shrink-0">
+  // Desktop sidebar - hidden in focus mode
+  const desktopSidebar = (
+    <aside className={cn(
+      "hidden md:flex md:flex-shrink-0 transition-all duration-300",
+      hidden && "md:hidden"
+    )}>
       <div className="flex flex-col w-64">
         <div className="flex flex-col flex-grow bg-slate-900 pt-5 pb-4 overflow-y-auto border-r border-slate-800">
           {/* Logo */}
@@ -89,15 +100,12 @@ export function Sidebar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`
-                    group flex items-center px-3 py-3 text-sm font-medium rounded-lg
-                    transition-all duration-200
-                    ${
-                      isActive
-                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
-                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                    }
-                  `}
+                  className={cn(
+                    "group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200",
+                    isActive
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  )}
                 >
                   <span className={isActive ? '' : 'group-hover:scale-110 transition-transform'}>
                     {item.icon}
@@ -120,5 +128,87 @@ export function Sidebar() {
         </div>
       </div>
     </aside>
+  );
+
+  // Mobile sidebar overlay
+  const mobileSidebar = (
+    <>
+      {/* Backdrop */}
+      <div
+        className={cn(
+          "fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity duration-300",
+          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        )}
+        onClick={onClose}
+      />
+
+      {/* Slide-out panel */}
+      <div
+        className={cn(
+          "fixed inset-y-0 left-0 w-64 bg-slate-900 z-50 md:hidden transform transition-transform duration-300 ease-in-out",
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <div className="flex flex-col h-full pt-5 pb-4 overflow-y-auto">
+          {/* Close button and logo */}
+          <div className="flex items-center justify-between px-4 mb-8">
+            <div className="flex items-center">
+              <span className="text-2xl mr-2">🚛</span>
+              <span className="text-xl font-bold text-white">RoadMaster Pro</span>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 px-2 space-y-1">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={onClose}
+                  className={cn(
+                    "group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200",
+                    isActive
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  )}
+                >
+                  <span className={isActive ? '' : 'group-hover:scale-110 transition-transform'}>
+                    {item.icon}
+                  </span>
+                  <span className="ml-3">{item.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Footer */}
+          <div className="flex-shrink-0 px-4 mt-4 pt-4 border-t border-slate-800">
+            <div className="flex items-center text-xs text-slate-500">
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>v1.0.0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
+  return (
+    <>
+      {desktopSidebar}
+      {mobileSidebar}
+    </>
   );
 }

@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import { Sidebar } from './sidebar';
+import { FocusModeProvider, useFocusMode } from '@/lib/contexts/focus-mode';
+import { FocusModeToggle } from '@/components/ui/focus-mode-toggle';
+import { cn } from '@/lib/utils';
 
 interface DashboardLayoutClientProps {
   userEmail: string;
@@ -9,19 +12,29 @@ interface DashboardLayoutClientProps {
   children: React.ReactNode;
 }
 
-export function DashboardLayoutClient({ userEmail, onSignOut, children }: DashboardLayoutClientProps) {
+function DashboardLayoutInner({ userEmail, onSignOut, children }: DashboardLayoutClientProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { isFocusMode, isGlanceMode } = useFocusMode();
+
+  const hideChrome = isFocusMode || isGlanceMode;
 
   return (
     <div className="flex h-screen bg-slate-50 dark:bg-slate-900">
-      {/* Sidebar */}
-      <Sidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+      {/* Sidebar - hidden in focus/glance mode */}
+      <Sidebar
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        hidden={hideChrome}
+      />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Compact Top Bar */}
-        <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 h-12 flex-shrink-0">
+        {/* Compact Top Bar - hidden in focus/glance mode */}
+        <header className={cn(
+          "bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex-shrink-0 transition-all duration-300",
+          hideChrome ? "h-0 opacity-0 overflow-hidden" : "h-12"
+        )}>
           <div className="h-full px-3 sm:px-4 lg:px-6 flex items-center justify-between gap-3">
             {/* Mobile Menu Button */}
             <button
@@ -73,12 +86,31 @@ export function DashboardLayoutClient({ userEmail, onSignOut, children }: Dashbo
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-900">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-3">
+        <main className={cn(
+          "flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-900 transition-all duration-300",
+          hideChrome && "bg-background"
+        )}>
+          <div className={cn(
+            "mx-auto transition-all duration-300",
+            hideChrome
+              ? "max-w-none px-2 py-2"
+              : "max-w-7xl px-3 sm:px-4 lg:px-6 py-3"
+          )}>
             {children}
           </div>
         </main>
       </div>
+
+      {/* Focus Mode Toggle - always visible */}
+      <FocusModeToggle />
     </div>
+  );
+}
+
+export function DashboardLayoutClient(props: DashboardLayoutClientProps) {
+  return (
+    <FocusModeProvider>
+      <DashboardLayoutInner {...props} />
+    </FocusModeProvider>
   );
 }

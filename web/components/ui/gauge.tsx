@@ -7,12 +7,13 @@ interface GaugeProps {
   max: number;
   label: string;
   unit?: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   color?: 'profit' | 'income' | 'fuel' | 'damage' | 'primary';
   className?: string;
   variant?: 'minimal' | 'detailed' | 'realistic';
   cruiseControlSpeed?: number;
   zones?: Array<{ start: number; end: number; color: string }>;
+  showDigital?: boolean; // Show large digital readout below gauge
 }
 
 const sizeConfig = {
@@ -20,6 +21,8 @@ const sizeConfig = {
   sm: { width: 120, stroke: 8, fontSize: '1.5rem', labelSize: '0.75rem' },
   md: { width: 140, stroke: 9, fontSize: '1.75rem', labelSize: '0.8rem' },
   lg: { width: 180, stroke: 11, fontSize: '2.25rem', labelSize: '0.95rem' },
+  xl: { width: 220, stroke: 13, fontSize: '2.75rem', labelSize: '1rem' },
+  '2xl': { width: 280, stroke: 16, fontSize: '3.5rem', labelSize: '1.1rem' },
 };
 
 const colorConfig = {
@@ -46,6 +49,7 @@ export function Gauge({
   variant = 'detailed',
   cruiseControlSpeed,
   zones = [],
+  showDigital = false,
 }: GaugeProps) {
   const config = sizeConfig[size];
   const percentage = Math.min((value / max) * 100, 100);
