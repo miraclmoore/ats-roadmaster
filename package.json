@@ -1,0 +1,13 @@
+{
+  "name": "ats-roadmaster",
+  "version": "1.0.0",
+  "description": "RoadMaster Pro - ATS Companion App",
+  "private": true,
+  "scripts": {
+    "test:db": "supabase db test",
+    "test:db:watch": "supabase db test --watch"
+  },
+  "workspaces": [
+    "web"
+  ]
+}
