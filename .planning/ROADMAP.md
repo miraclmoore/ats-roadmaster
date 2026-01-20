@@ -53,10 +53,13 @@ Plans:
 4. API route validates all required fields and returns 400 error for missing user_id before database operation
 5. User's API key follows secure generation pattern (rm_ prefix + 64 hex characters)
 
-**Plans:** 0 plans
+**Plans:** 4 plans
 
 Plans:
-- [ ] TBD (created by /gsd:plan-phase 2)
+- [ ] 02-01-PLAN.md — Rate limiting infrastructure with Upstash Redis
+- [ ] 02-02-PLAN.md — Input validation with Zod schemas
+- [ ] 02-03-PLAN.md — Error monitoring with Sentry
+- [ ] 02-04-PLAN.md — Apply security layers to all API routes
 
 ---
 
@@ -159,7 +162,7 @@ Plans:
 | Phase | Requirements | Status | Completion |
 |-------|-------------|--------|------------|
 | 1 - Foundation & Testing | 12 | Complete | 100% |
-| 2 - Security Hardening | 5 | Pending | 0% |
+| 2 - Security Hardening | 5 | Planning | 0% |
 | 3 - Design System & Core Fixes | 19 | Pending | 0% |
 | 4 - Real-Time Telemetry & Performance | 23 | Pending | 0% |
 | 5 - Analytics & Page Completion | 75 | Pending | 0% |
