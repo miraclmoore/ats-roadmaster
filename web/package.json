@@ -1,7 +1,9 @@
 {
-  "name": "web",
-  "version": "1.0.0",
-  "description": "",
+  "name": "roadmaster-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "RoadMaster Pro - ATS companion dashboard with real-time telemetry",
+  "//": "Coverage strategy: 100% for new calculation logic, brownfield UI excluded until refactoring phases",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
