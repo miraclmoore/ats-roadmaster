@@ -86,6 +86,8 @@ Output: Job complete, API key regeneration, and preferences routes secured with 
   <name>Secure job complete endpoint</name>
   <files>web/app/api/jobs/complete/route.ts</files>
   <action>
+**Prerequisite:** web/app/api/jobs/complete/schema.ts created in plan 02-02
+
 Update web/app/api/jobs/complete/route.ts with security layers:
 
 ```typescript

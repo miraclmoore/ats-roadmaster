@@ -68,6 +68,8 @@ Output: Telemetry and job start routes secured with layered defense: validation 
   <name>Secure telemetry endpoint</name>
   <files>web/app/api/telemetry/route.ts</files>
   <action>
+**Prerequisite:** web/app/api/telemetry/schema.ts created in plan 02-02
+
 Rewrite web/app/api/telemetry/route.ts with all security layers:
 
 ```typescript
@@ -283,6 +285,8 @@ Should show all security imports and usage.
   <name>Secure job start endpoint</name>
   <files>web/app/api/jobs/start/route.ts</files>
   <action>
+**Prerequisite:** web/app/api/jobs/start/schema.ts created in plan 02-02
+
 Update web/app/api/jobs/start/route.ts with security layers:
 
 ```typescript
