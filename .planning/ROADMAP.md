@@ -25,13 +25,15 @@ Transform existing working telemetry system from "terrible UI" to professional a
 4. Developer imports shadcn/ui Button, Card, Badge components with automotive theme applied
 5. CI pipeline runs tests automatically on every commit and blocks merge on failure
 
-**Plans:** 4 plans
+**Plans:** 6 plans
 
 Plans:
 - [ ] 01-01-PLAN.md — Vitest setup + unit tests for profit/efficiency calculations
 - [ ] 01-02-PLAN.md — Playwright setup + E2E test for live telemetry flow
 - [ ] 01-03-PLAN.md — pgTAP database/RLS tests
 - [ ] 01-04-PLAN.md — shadcn/ui initialization + automotive theme + CI pipeline
+- [ ] 01-05-PLAN.md — Adjust coverage thresholds for brownfield codebase reality (gap closure)
+- [ ] 01-06-PLAN.md — Trigger CI workflow execution to verify end-to-end (gap closure)
 
 ---
 
