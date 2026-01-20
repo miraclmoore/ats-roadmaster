@@ -13,11 +13,11 @@
 ## Current Position
 
 **Phase:** 1 of 6 (Foundation & Testing)
-**Plan:** 04 of 4 in phase
+**Plan:** 01 of 4 in phase
 **Status:** In progress
-**Last activity:** 2026-01-20 - Completed 01-04-PLAN.md
+**Last activity:** 2026-01-20 - Completed 01-01-PLAN.md
 
-**Progress:** ██████░░░░░░░░░░░░░░ 50% (2/4 plans in Phase 1)
+**Progress:** ██░░░░░░░░░░░░░░░░░░ 25% (1/4 plans in Phase 1)
 
 **Active Requirements:** TEST-01 through TEST-10, DESIGN-01 (partial), DESIGN-07 (partial)
 
@@ -47,6 +47,24 @@
 ## Accumulated Context
 
 ### Recent Decisions
+
+**2026-01-20: Vitest with v8 Coverage (01-01)**
+- Decision: Use Vitest with v8 coverage provider for all unit and integration tests
+- Rationale: Native ESM support, faster than Jest, accurate coverage with v8 provider
+- Outcome: 65 tests passing with 100% coverage for profit and efficiency calculations
+- Phase: 01-01
+
+**2026-01-20: Mock Supabase at Module Level (01-01)**
+- Decision: Mock Supabase service client at module level for API route tests
+- Rationale: Prevents real database calls, ensures fast test execution, predictable test data
+- Outcome: 19 API integration tests verify request/response contracts without database
+- Phase: 01-01
+
+**2026-01-20: Exclude E2E from Vitest (01-01)**
+- Decision: Exclude e2e tests from Vitest configuration
+- Rationale: Prevent conflicts between Playwright and Vitest test frameworks
+- Outcome: Vitest runs unit/integration tests, Playwright handles e2e separately
+- Phase: 01-01
 
 **2026-01-20: shadcn/ui for Design System (01-04)**
 - Decision: Use shadcn/ui over Tremor or other component libraries
@@ -102,6 +120,12 @@
 - WebSocket subscriptions must include cleanup functions to prevent memory leaks
 - Throttle real-time updates to 500ms to prevent re-render storms
 
+**From Plan Execution (01-01):**
+- toBeCloseTo() essential for floating point comparisons in tests
+- Exclude e2e tests from Vitest to prevent framework conflicts
+- Mock Supabase at module level provides clean test isolation
+- 100% coverage achievable for pure calculation functions
+
 **From Plan Execution (01-04):**
 - Tailwind v4 requires CSS variables outside @layer base
 - Tailwind v4 @theme inline directive maps variables to utilities
@@ -147,26 +171,25 @@ None currently.
 
 ## Session Continuity
 
-**Last Session:** 2026-01-20 16:29:52Z
-**Activity:** Executed 01-04-PLAN.md (shadcn/ui Design System & CI Pipeline)
-**Outcome:** shadcn/ui components installed, automotive theme applied, GitHub Actions CI created
+**Last Session:** 2026-01-20 16:31:40Z
+**Activity:** Executed 01-01-PLAN.md (Vitest Testing Infrastructure)
+**Outcome:** Vitest installed, 65 tests passing, 100% coverage for calculations
 
-**Stopped at:** Completed 01-04-PLAN.md
+**Stopped at:** Completed 01-01-PLAN.md
 **Resume file:** None (plan complete)
 
 **Next Session:**
-- Goal: Execute remaining Phase 1 plans (01-01, 01-02)
-- Expected: Complete unit and E2E testing infrastructure
-- Note: Plans 01-03 and 01-04 complete; 2 more plans in Phase 1
+- Goal: Execute remaining Phase 1 plans (01-02, 01-03, 01-04)
+- Expected: Complete component tests, database tests, and design system
+- Note: Plan 01-01 complete; 3 more plans in Phase 1
 
 **Context for Handoff:**
-- shadcn/ui Button/Card/Badge components available with automotive theme
-- Tailwind v4 @theme inline directive applied with hsl() colors
-- GitHub Actions CI pipeline created (will run when test scripts added)
-- Database testing infrastructure established (Plan 01-03)
-- 3 commits made: shadcn components, automotive theme, CI pipeline
+- Vitest 4.0.17 installed with jsdom and v8 coverage
+- 65 tests passing (22 profit, 24 efficiency, 19 API routes)
+- Test infrastructure ready for component testing
+- 4 commits made: Vitest config, profit tests, efficiency tests, API route tests
 
 ---
 
-*Last updated: 2026-01-20 16:29:52Z*
-*Last plan executed: 01-04-PLAN.md*
+*Last updated: 2026-01-20 16:31:40Z*
+*Last plan executed: 01-01-PLAN.md*
