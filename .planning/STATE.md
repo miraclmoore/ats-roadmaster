@@ -13,11 +13,11 @@
 ## Current Position
 
 **Phase:** 1 of 6 (Foundation & Testing)
-**Plan:** 01 of 4 in phase
+**Plan:** 02 of 4 in phase
 **Status:** In progress
-**Last activity:** 2026-01-20 - Completed 01-01-PLAN.md
+**Last activity:** 2026-01-20 - Completed 01-02-PLAN.md
 
-**Progress:** ██░░░░░░░░░░░░░░░░░░ 25% (1/4 plans in Phase 1)
+**Progress:** ████░░░░░░░░░░░░░░░░ 50% (2/4 plans in Phase 1)
 
 **Active Requirements:** TEST-01 through TEST-10, DESIGN-01 (partial), DESIGN-07 (partial)
 
@@ -47,6 +47,24 @@
 ## Accumulated Context
 
 ### Recent Decisions
+
+**2026-01-20: Playwright for E2E with Cross-Browser Testing (01-02)**
+- Decision: Use Playwright for E2E testing with chromium, firefox, and webkit
+- Rationale: Official Next.js recommendation, cross-browser support, modern async/await API
+- Outcome: E2E infrastructure ready, tests run in headless mode suitable for CI
+- Phase: 01-02
+
+**2026-01-20: Test Unauthenticated Flow Only (01-02)**
+- Decision: E2E tests verify unauthenticated users redirect to login (defer authenticated testing)
+- Rationale: Redirect to login is expected behavior for protected routes, auth setup deferred to future phase
+- Outcome: Tests document expected behavior, 3 smoke tests across 3 browsers (9 total)
+- Phase: 01-02
+
+**2026-01-20: Mock Supabase Real-time for Component Tests (01-02)**
+- Decision: Mock Supabase channel.on() callbacks instead of actual WebSocket
+- Rationale: Tests verify component behavior, not Supabase SDK. Mocking prevents flaky network tests
+- Outcome: 7 real-time subscription tests verify setup, updates, and cleanup
+- Phase: 01-02
 
 **2026-01-20: Vitest with v8 Coverage (01-01)**
 - Decision: Use Vitest with v8 coverage provider for all unit and integration tests
@@ -120,6 +138,13 @@
 - WebSocket subscriptions must include cleanup functions to prevent memory leaks
 - Throttle real-time updates to 500ms to prevent re-render storms
 
+**From Plan Execution (01-02):**
+- Playwright webServer auto-starts dev server with reuseExistingServer flag
+- E2E tests use relative paths with baseURL (no hardcoded localhost:3000)
+- Component tests mock WebSocket callbacks to simulate real-time messages
+- Test production components directly with minimal viable data
+- Accessibility attributes should be tested (aria-label, aria-valuenow)
+
 **From Plan Execution (01-01):**
 - toBeCloseTo() essential for floating point comparisons in tests
 - Exclude e2e tests from Vitest to prevent framework conflicts
@@ -171,25 +196,26 @@ None currently.
 
 ## Session Continuity
 
-**Last Session:** 2026-01-20 16:31:40Z
-**Activity:** Executed 01-01-PLAN.md (Vitest Testing Infrastructure)
-**Outcome:** Vitest installed, 65 tests passing, 100% coverage for calculations
+**Last Session:** 2026-01-20 16:33:42Z
+**Activity:** Executed 01-02-PLAN.md (Playwright E2E Testing)
+**Outcome:** Playwright installed, 31 new tests (9 E2E, 7 real-time, 15 component), 96 total passing
 
-**Stopped at:** Completed 01-01-PLAN.md
+**Stopped at:** Completed 01-02-PLAN.md
 **Resume file:** None (plan complete)
 
 **Next Session:**
-- Goal: Execute remaining Phase 1 plans (01-02, 01-03, 01-04)
-- Expected: Complete component tests, database tests, and design system
-- Note: Plan 01-01 complete; 3 more plans in Phase 1
+- Goal: Execute remaining Phase 1 plans (01-03, 01-04)
+- Expected: Complete database tests and design system
+- Note: Plans 01-01 and 01-02 complete; 2 more plans in Phase 1
 
 **Context for Handoff:**
-- Vitest 4.0.17 installed with jsdom and v8 coverage
-- 65 tests passing (22 profit, 24 efficiency, 19 API routes)
-- Test infrastructure ready for component testing
-- 4 commits made: Vitest config, profit tests, efficiency tests, API route tests
+- Playwright 1.57.0 installed with chromium, firefox, webkit browsers
+- E2E tests verify unauthenticated flow (redirect to login is success)
+- Component tests mock Supabase real-time WebSocket for subscription tests
+- 96 tests passing (22 profit, 24 efficiency, 19 API, 7 real-time, 11 Gauge, 13 RouteAdvisorCard)
+- 4 commits made: Playwright config, E2E tests, real-time tests, component render tests
 
 ---
 
-*Last updated: 2026-01-20 16:31:40Z*
-*Last plan executed: 01-01-PLAN.md*
+*Last updated: 2026-01-20 16:33:42Z*
+*Last plan executed: 01-02-PLAN.md*
