@@ -21,6 +21,7 @@
   "license": "ISC",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
+    "@radix-ui/react-slot": "^1.2.4",
     "@react-spring/web": "^10.0.3",
     "@sentry/nextjs": "^10.35.0",
     "@supabase/ssr": "^0.8.0",
