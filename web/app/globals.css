@@ -1,47 +1,95 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+/* Import Premium Automotive Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Azeret+Mono:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap');
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    /* RoadMaster Pro Style Guide - Industrial Dark Palette */
+/* Move :root variables OUTSIDE @layer base for Tailwind v4 */
+:root {
+  /* RoadMaster Pro - Professional Truck Dashboard Theme */
+  /* Automotive-authentic color palette (diesel truck aesthetic) */
 
-    /* Core Industrial Colors */
-    --background: 18 20 23; /* Asphalt Black #121417 */
-    --foreground: 234 236 239; /* Primary Text #EAECEF */
+  /* Backgrounds - Dark charcoal */
+  --background: hsl(240 5% 6%);       /* Dark charcoal #0F0F11 */
+  --foreground: hsl(60 5% 90%);       /* Off-white #E8E7E3 */
+  --card: hsl(240 4% 9%);             /* Slightly lighter charcoal #161618 */
+  --card-foreground: hsl(60 5% 90%);  /* Off-white #E8E7E3 */
 
-    --card: 30 35 41; /* Gunmetal Gray #1E2329 */
-    --card-foreground: 234 236 239;
+  /* Primary - Amber (warning lights, active gauges) */
+  --primary: hsl(35 100% 50%);        /* Amber #FF9500 */
+  --primary-foreground: hsl(240 5% 6%);
 
-    --popover: 30 35 41;
-    --popover-foreground: 234 236 239;
+  /* Secondary - Steel blue (info displays) */
+  --secondary: hsl(200 80% 50%);      /* Steel blue #1A8CFF */
+  --secondary-foreground: hsl(60 5% 90%);
 
-    --primary: 47 128 237; /* Highway Blue #2F80ED */
-    --primary-foreground: 234 236 239;
+  /* Muted - Dark gray */
+  --muted: hsl(240 5% 15%);           /* Dark gray #252526 */
+  --muted-foreground: hsl(60 5% 60%); /* Mid gray #9B9A96 */
 
-    --secondary: 30 35 41; /* Gunmetal Gray for secondary surfaces */
-    --secondary-foreground: 176 184 193; /* Secondary Text #B0B8C1 */
+  /* Accent - Red (brake lights, critical warnings) */
+  --accent: hsl(10 80% 50%);          /* Red #E63312 */
+  --accent-foreground: hsl(60 5% 90%);
 
-    --muted: 44 50 56; /* Steel Border #2C3238 */
-    --muted-foreground: 122 130 140; /* Muted Text #7A828C */
+  /* Destructive */
+  --destructive: hsl(0 84% 60%);      /* Bright red #F23030 */
+  --destructive-foreground: hsl(60 5% 90%);
 
-    --accent: 242 153 74; /* Safety Orange #F2994A */
-    --accent-foreground: 18 20 23;
+  /* Borders and inputs */
+  --border: hsl(240 6% 20%);          /* Subtle gray #31313A */
+  --input: hsl(240 6% 20%);
+  --ring: hsl(35 100% 50%);           /* Amber ring focus */
 
-    --destructive: 235 87 87; /* Brake Red #EB5757 */
-    --destructive-foreground: 234 236 239;
+  /* Border radius */
+  --radius: 0.5rem;
 
-    --border: 44 50 56; /* Steel Border #2C3238 */
-    --input: 44 50 56;
-    --ring: 47 128 237; /* Highway Blue focus ring */
+  /* Custom backgrounds - Matte Industrial (legacy support) */
+  --bg-void: 10 10 10;
+  --bg-panel: 26 26 26;
+  --bg-card: 42 42 42;
+  --bg-elevated: 58 58 58;
 
-    --radius: 0.5rem; /* 8px - per style guide 6-8px */
+  /* Display Colors - Subdued Automotive (legacy support) */
+  --display-blue: 90 200 250;
+  --display-amber: 255 149 0;
+  --display-white: 255 255 255;
+  --display-red: 255 59 48;
+  --display-green: 52 199 89;
 
-    /* Trucking-specific semantic colors (Style Guide) */
-    --profit: 39 174 96; /* Freight Green #27AE60 */
-    --income: 86 204 242; /* Info Cyan #56CCF2 */
-    --fuel: 242 153 74; /* Safety Orange #F2994A */
-    --damage: 235 87 87; /* Brake Red #EB5757 */
-  }
+  /* Trucking-specific (legacy support) */
+  --profit: 52 199 89;
+  --income: 90 200 250;
+  --fuel: 255 149 0;
+  --damage: 255 59 48;
+
+  /* Typography - Automotive Grade */
+  --font-sans: 'Rajdhani', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: 'Azeret Mono', 'Courier New', monospace;
+  --font-display: 'Orbitron', 'Rajdhani', sans-serif;
+
+  /* Shadows - Subtle depth */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+/* Tailwind v4 theme directive - map CSS variables to Tailwind utilities */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 }
 
 @layer base {
@@ -50,44 +98,491 @@
   }
 
   body {
-    background-color: rgb(var(--background));
+    background-color: rgb(var(--bg-void));
     color: rgb(var(--foreground));
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-feature-settings: "tnum"; /* Tabular figures for numbers */
+    font-family: var(--font-sans);
+    font-feature-settings: "tnum";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    position: relative;
+  }
+  
+  /* Apply atmospheric effects to body */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      transparent 60%,
+      rgba(0, 0, 0, 0.25) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
   }
 
-  /* Headings per style guide */
+  /* Headings - Professional */
   h1 {
-    font-size: 2rem; /* 32px - Page Title */
-    font-weight: 600; /* Semibold */
+    font-size: 1.875rem; /* 30px */
+    font-weight: 600;
     line-height: 1.2;
+    letter-spacing: -0.02em;
   }
 
   h2 {
-    font-size: 1.25rem; /* 20px - Section Header */
-    font-weight: 500; /* Medium */
+    font-size: 1.5rem; /* 24px */
+    font-weight: 600;
     line-height: 1.3;
+    letter-spacing: -0.01em;
   }
 
   h3 {
-    font-size: 1rem; /* 16px - Card Title */
-    font-weight: 500; /* Medium */
+    font-size: 1.125rem; /* 18px */
+    font-weight: 600;
     line-height: 1.4;
   }
 
-  /* Number-heavy displays - Always use monospace */
+  /* Number displays - Monospace for readability */
   .metric-value {
-    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-family: var(--font-mono);
     font-feature-settings: "tnum";
     font-variant-numeric: tabular-nums;
     font-weight: 500;
+  }
+
+  /* Focus indicators */
+  *:focus {
+    outline: none;
+  }
+
+  *:focus-visible {
+    outline: 2px solid rgb(var(--display-blue));
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* LCD Display Effect - Subtle */
+  .lcd-text {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 1px currentColor;
+  }
+
+  /* Card with subtle depth */
+  .dashboard-card {
+    background: linear-gradient(
+      145deg,
+      rgb(var(--bg-card)),
+      rgb(var(--bg-panel))
+    );
+    border: 1px solid rgb(var(--border));
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Gauge container */
+  .gauge-container {
+    background: rgb(var(--bg-panel));
+    border: 1px solid rgb(var(--border));
+    box-shadow:
+      inset 0 2px 4px rgba(0, 0, 0, 0.3),
+      var(--shadow-sm);
+  }
+
+  /* Status indicators - Automotive style */
+  .status-good {
+    color: rgb(var(--display-green));
+  }
+
+  .status-warning {
+    color: rgb(var(--display-amber));
+  }
+
+  .status-critical {
+    color: rgb(var(--display-red));
+  }
+
+  .status-info {
+    color: rgb(var(--display-blue));
+  }
+
+  /* Subtle glow for active displays (very minimal) */
+  .active-display {
+    text-shadow: 0 0 2px currentColor;
+  }
+
+  /* Progress bars - Automotive style */
+  .progress-bar {
+    background: rgb(var(--bg-elevated));
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    background: rgb(var(--display-blue));
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  /* Warning pulse - Subtle */
+  @keyframes warning-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  .warning-pulse {
+    animation: warning-pulse 2s ease-in-out infinite;
+  }
+
+  /* Separator lines */
+  .separator {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(var(--border)),
+      transparent
+    );
+  }
+
+  /* Digital readout panel */
+  .digital-panel {
+    background: rgb(var(--bg-panel));
+    border: 1px solid rgb(var(--border));
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    font-family: var(--font-mono);
+  }
+
+  /* Inset display (like LCD screen) */
+  .inset-display {
+    background: rgb(10, 10, 10);
+    border: 1px solid rgb(var(--border));
+    box-shadow:
+      inset 0 2px 4px rgba(0, 0, 0, 0.5),
+      0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  /* Button - Industrial style */
+  .btn-primary {
+    background: rgb(var(--display-blue));
+    color: rgb(var(--bg-void));
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    border: none;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    background: rgb(70, 180, 230);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Navigation active state - Subtle highlight */
+  .nav-active {
+    background: rgb(var(--bg-elevated));
+    border-left: 3px solid rgb(var(--display-blue));
+    color: rgb(var(--display-blue));
+  }
+
+  /* Table styling */
+  .data-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  .data-table th {
+    background: rgb(var(--bg-panel));
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgb(160, 160, 160);
+    border-bottom: 1px solid rgb(var(--border));
+  }
+
+  .data-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgb(var(--border));
+  }
+
+  .data-table tr:hover {
+    background: rgb(var(--bg-elevated));
+  }
+
+  /* Premium Atmospheric Effects */
+  
+  /* Grain texture overlay - adds film-like quality */
+  .dashboard-grain {
+    position: relative;
+  }
+  
+  .dashboard-grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  /* Scanline effect for digital cluster authenticity */
+  .scanlines {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .scanlines::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0) 50%,
+      rgba(0, 0, 0, 0.02) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  
+  /* Vignette effect for depth */
+  .vignette {
+    position: relative;
+  }
+  
+  .vignette::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      transparent 60%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+    pointer-events: none;
+    z-index: 50;
+  }
+  
+  /* Enhanced gauge with glow */
+  .gauge-glow {
+    filter: drop-shadow(0 0 12px currentColor);
+    transition: filter 0.3s ease;
+  }
+  
+  .gauge-glow:hover {
+    filter: drop-shadow(0 0 20px currentColor);
+  }
+  
+  /* Premium card with depth */
+  .premium-card {
+    background: linear-gradient(
+      145deg,
+      rgba(42, 42, 42, 0.95),
+      rgba(26, 26, 26, 0.95)
+    );
+    border: 1px solid rgba(80, 80, 80, 0.3);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.3),
+      0 2px 4px -1px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(8px);
+  }
+  
+  /* Enhanced gauge container with radial gradient */
+  .gauge-container-enhanced {
+    background: radial-gradient(
+      circle at 50% 100%,
+      rgba(58, 58, 58, 0.8) 0%,
+      rgba(26, 26, 26, 0.95) 50%,
+      rgb(26, 26, 26) 100%
+    );
+    border: 1px solid rgba(80, 80, 80, 0.4);
+    box-shadow:
+      inset 0 2px 8px rgba(0, 0, 0, 0.5),
+      inset 0 -1px 2px rgba(255, 255, 255, 0.02),
+      0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Animated gradient for active states */
+  @keyframes shimmer {
+    0% {
+      background-position: -200% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+  
+  .shimmer-effect {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(90, 200, 250, 0.1) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  
+  /* Page load stagger animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .fade-in-up {
+    animation: fadeInUp 0.6s ease-out backwards;
+  }
+  
+  .stagger-1 { animation-delay: 0ms; }
+  .stagger-2 { animation-delay: 50ms; }
+  .stagger-3 { animation-delay: 100ms; }
+  .stagger-4 { animation-delay: 150ms; }
+  .stagger-5 { animation-delay: 200ms; }
+  .stagger-6 { animation-delay: 250ms; }
+  .stagger-7 { animation-delay: 300ms; }
+  .stagger-8 { animation-delay: 350ms; }
+  
+  /* Enhanced number transitions */
+  .number-transition {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Critical warning pulse - more dramatic */
+  @keyframes critical-pulse {
+    0%, 100% {
+      opacity: 1;
+      filter: drop-shadow(0 0 4px currentColor);
+    }
+    50% {
+      opacity: 0.85;
+      filter: drop-shadow(0 0 12px currentColor);
+    }
+  }
+  
+  .critical-pulse {
+    animation: critical-pulse 1.5s ease-in-out infinite;
+  }
+  
+  /* Glow button hover effect */
+  .glow-hover {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .glow-hover::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(
+      45deg,
+      rgba(90, 200, 250, 0.2),
+      rgba(90, 200, 250, 0)
+    );
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .glow-hover:hover::before {
+    opacity: 1;
+  }
+  
+  /* Enhanced LCD text with subtle glow */
+  .lcd-enhanced {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+    text-shadow: 
+      0 0 2px currentColor,
+      0 0 4px currentColor;
+  }
+  
+  /* Heading with tech aesthetic */
+  .tech-heading {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: linear-gradient(
+      135deg,
+      rgb(var(--display-blue)),
+      rgb(var(--display-white))
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  .warning-pulse,
+  .critical-pulse,
+  .shimmer-effect,
+  .fade-in-up,
+  .gauge-glow {
+    animation: none !important;
+    filter: none !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --bg-void: 0 0 0;
+    --bg-panel: 0 0 0;
+    --bg-card: 0 0 0;
+    --border: 255 255 255;
+  }
+
+  .dashboard-card {
+    border-width: 2px;
   }
 }
