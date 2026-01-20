@@ -20,6 +20,14 @@ jobs:
       - name: Debug - List web directory
         run: ls -la web/
 
+      - name: Debug - Check package-lock.json content
+        run: |
+          cd web
+          echo "=== First 30 lines of package-lock.json ==="
+          head -30 package-lock.json
+          echo "=== Validate JSON ==="
+          node -e "JSON.parse(require('fs').readFileSync('package-lock.json', 'utf8')); console.log('Valid JSON')"
+
       - name: Install dependencies
         run: cd web && npm ci
 
