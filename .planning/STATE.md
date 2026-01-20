@@ -12,16 +12,16 @@
 
 ## Current Position
 
-**Phase:** 1 of 6 (Foundation & Testing) - COMPLETE ✓
-**Plan:** All 6 plans complete (4 planned + 2 gap closure)
-**Status:** Verified and complete
-**Last activity:** 2026-01-20 - Phase 1 verification passed
+**Phase:** 2 of 6 (Security Hardening) - IN PROGRESS
+**Plan:** 2 of 5 plans complete (02-01, 02-02)
+**Status:** Input validation complete, continuing security hardening
+**Last activity:** 2026-01-20 - Completed 02-02-PLAN.md (Input Validation)
 
-**Progress:** ████████████████████ 100% (Phase 1 of 6 complete)
+**Progress:** █████░░░░░░░░░░░░░░░ 40% (Phase 2 of 6, 2/5 plans)
 
-**Active Requirements:** SEC-01 through SEC-05 (Phase 2)
+**Active Requirements:** SEC-02 through SEC-05 (remaining)
 
-**Next Milestone:** Dashboard protected from critical security vulnerabilities
+**Next Milestone:** Complete rate limiting and error handling
 
 ---
 
@@ -47,6 +47,24 @@
 ## Accumulated Context
 
 ### Recent Decisions
+
+**2026-01-20: Defense-in-depth validation pattern (02-02)**
+- Decision: Implement secondary validation after API key lookup with validateUserOwnsResource
+- Rationale: API key lookup uses service role (bypasses RLS), need to confirm user owns resources
+- Outcome: Prevents privilege escalation if API key is compromised
+- Phase: 02-02
+
+**2026-01-20: Co-locate schemas with API routes (02-02)**
+- Decision: Place schema.ts files next to route.ts files in API directory structure
+- Rationale: Makes validation logic discoverable and easier to maintain
+- Outcome: Pattern established: app/api/{endpoint}/schema.ts exports schema and TypeScript type
+- Phase: 02-02
+
+**2026-01-20: Use realistic game limits for validation (02-02)**
+- Decision: Constrain numeric fields to realistic game mechanics (speed 0-150mph, rpm 0-3000)
+- Rationale: Prevents absurd values while allowing normal gameplay variation
+- Outcome: Catches data corruption and malicious input without false positives
+- Phase: 02-02
 
 **2026-01-20: npm install for CI instead of npm ci (01-06)**
 - Decision: Use npm install in GitHub Actions workflow instead of npm ci
@@ -245,28 +263,26 @@ None currently.
 
 ## Session Continuity
 
-**Last Session:** 2026-01-20T17:33:00Z
-**Activity:** Executed 01-06-PLAN.md (CI Verification)
-**Outcome:** CI workflow running successfully with all 96 tests passing
+**Last Session:** 2026-01-20T20:54:20Z
+**Activity:** Executed 02-02-PLAN.md (Input Validation)
+**Outcome:** Zod schemas created for all API endpoints, service role key audited
 
-**Stopped at:** Phase 1 Complete - All foundation and testing plans executed
-**Resume file:** None (phase complete)
+**Stopped at:** Completed 02-02-PLAN.md - Input validation infrastructure complete
+**Resume file:** None
 
 **Next Session:**
-- Goal: Begin Phase 2 (Security & Data Layer)
-- Expected: Plan and execute authentication, security hardening, RLS policies
-- Note: Phase 1 complete with 6/4 plans (2 gap closure plans)
+- Goal: Continue Phase 2 security hardening
+- Expected: Integrate schemas into API routes, add rate limiting, implement error handling
+- Note: 2/5 plans complete in Phase 2
 
 **Context for Handoff:**
-- CI pipeline validates all changes automatically
-- All 96 tests passing (22 profit, 24 efficiency, 19 API, 31 component/E2E)
-- Coverage thresholds met at 88%+ for tested code
-- GitHub Actions workflow uses npm install (npm ci has CI-specific bugs)
-- Test assertions simplified for CI jsdom compatibility
-- Placeholder Supabase env vars allow E2E tests to run
-- 12 commits made in CI verification process (bug fixes and environment compatibility)
+- Zod schemas ready for use: telemetrySchema, jobStartSchema, jobCompleteSchema
+- Validation utilities created: validateApiKey, validateUserOwnsResource
+- Service role key confirmed secure (server-side only)
+- Defense-in-depth pattern established for API key authentication
+- 3 commits made: telemetry schema, job schemas, validation utilities
 
 ---
 
-*Last updated: 2026-01-20T17:33:00Z*
-*Last plan executed: 01-06-PLAN.md*
+*Last updated: 2026-01-20T20:54:20Z*
+*Last plan executed: 02-02-PLAN.md*
