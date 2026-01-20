@@ -3,7 +3,7 @@ phase: 02-security-hardening
 plan: 04b
 type: execute
 wave: 2
-depends_on: ['01', '02', '03']
+depends_on: ['02-01', '02-02', '02-03']
 files_modified:
   - web/app/api/jobs/complete/route.ts
   - web/app/api/user/regenerate-key/route.ts

@@ -53,13 +53,14 @@ Plans:
 4. API route validates all required fields and returns 400 error for missing user_id before database operation
 5. User's API key follows secure generation pattern (rm_ prefix + 64 hex characters)
 
-**Plans:** 4 plans
+**Plans:** 5 plans
 
 Plans:
 - [ ] 02-01-PLAN.md — Rate limiting infrastructure with Upstash Redis
 - [ ] 02-02-PLAN.md — Input validation with Zod schemas
 - [ ] 02-03-PLAN.md — Error monitoring with Sentry
-- [ ] 02-04-PLAN.md — Apply security layers to all API routes
+- [ ] 02-04a-PLAN.md — Apply security layers to telemetry and job start endpoints
+- [ ] 02-04b-PLAN.md — Apply security layers to job complete, preferences, and key generation endpoints
 
 ---
 
