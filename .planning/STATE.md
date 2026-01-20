@@ -13,15 +13,15 @@
 ## Current Position
 
 **Phase:** 2 of 6 (Security Hardening) - IN PROGRESS
-**Plan:** 3 of 5 plans complete (02-01, 02-02, 02-03)
-**Status:** Error monitoring integrated, continuing security hardening
-**Last activity:** 2026-01-20 - Completed 02-03-PLAN.md (Sentry Integration)
+**Plan:** 4 of 5 plans complete (02-01, 02-02, 02-03, 02-04a)
+**Status:** API routes secured with layered defense, continuing integration
+**Last activity:** 2026-01-20 - Completed 02-04a-PLAN.md (API Route Security Integration)
 
-**Progress:** ██████░░░░░░░░░░░░░░ 60% (Phase 2 of 6, 3/5 plans)
+**Progress:** ████████░░░░░░░░░░░░ 80% (Phase 2 of 6, 4/5 plans)
 
-**Active Requirements:** SEC-02 through SEC-05 (remaining)
+**Active Requirements:** SEC-02 through SEC-05
 
-**Next Milestone:** Complete rate limiting and error handling
+**Next Milestone:** Complete remaining API route security (02-04b, 02-05)
 
 ---
 
@@ -47,6 +47,19 @@
 ## Accumulated Context
 
 ### Recent Decisions
+
+**2026-01-20: Validate before rate limiting for fast path rejection (02-04a)**
+- Decision: Apply Zod validation before rate limiting check in API routes
+- Rationale: Validation is microseconds-fast and rejects most attacks immediately; per-user rate limiting requires authentication (database query)
+- Outcome: Security layer order: Parse → Validate → Authenticate → Rate limit → Authorize → Database
+- Alternative: Rate limit before validation using IP-based limiting - rejected due to VPN rotation bypass and shared IP blocking
+- Phase: 02-04a
+
+**2026-01-20: Return rate limit headers on all API responses (02-04a)**
+- Decision: Include X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset headers on success responses
+- Rationale: SDK plugin needs rate limit information to implement exponential backoff and prevent unnecessary requests
+- Outcome: Clients can implement intelligent rate limiting and debugging
+- Phase: 02-04a
 
 **2026-01-20: Use Sentry v10 for Next.js 16 compatibility (02-03)**
 - Decision: Install @sentry/nextjs@10.35.0 instead of 8.x
@@ -318,27 +331,27 @@ None currently.
 
 ## Session Continuity
 
-**Last Session:** 2026-01-20T20:55:08Z
-**Activity:** Created SUMMARY for 02-01-PLAN.md (Rate Limiting Infrastructure)
-**Outcome:** Documented rate limiting infrastructure completion, verified all tasks complete
+**Last Session:** 2026-01-20T21:00:49Z
+**Activity:** Completed 02-04a-PLAN.md (API Route Security Integration)
+**Outcome:** Secured telemetry and job start endpoints with layered defense
 
-**Stopped at:** Completed 02-01 SUMMARY documentation
+**Stopped at:** Completed 02-04a execution and SUMMARY
 **Resume file:** None
 
 **Next Session:**
-- Goal: Continue Phase 2 security hardening with plans 02-04a and 02-04b
-- Expected: Integrate rate limiting and validation into API routes
-- Note: 3/5 plans complete in Phase 2 (02-01, 02-02, 02-03)
+- Goal: Complete Phase 2 with remaining plans (02-04b, 02-05 if exists)
+- Expected: Secure remaining API routes (jobs/complete, jobs/cancel, preferences, api-key)
+- Note: 4/5 plans complete in Phase 2 (02-01, 02-02, 02-03, 02-04a)
 
 **Context for Handoff:**
-- Rate limiting infrastructure ready (Upstash Redis, three tiers: 7200/hour, 100/hour, 20/15min)
-- Input validation schemas created for all API endpoints (Zod)
-- Sentry error monitoring integrated across all runtimes
-- Plans 02-04a and 02-04b can now integrate these components into API routes
-- User setup required: Upstash Redis account + Sentry account + environment variables
-- Summary created retroactively for 02-01 (tasks already executed in prior session)
+- Security layer pattern established: Parse → Validate → Authenticate → Rate limit → Authorize → Database
+- Telemetry endpoint secured (7200/hour rate limit)
+- Job start endpoint secured (100/hour rate limit)
+- All security components integrated: Zod validation, Upstash rate limiting, Sentry monitoring
+- Plan 02-04b ready to apply same pattern to remaining endpoints
+- No blockers, all dependencies available
 
 ---
 
-*Last updated: 2026-01-20T20:55:08Z*
-*Last plan executed: 02-01-PLAN.md (SUMMARY created)*
+*Last updated: 2026-01-20T21:00:49Z*
+*Last plan executed: 02-04a-PLAN.md*
