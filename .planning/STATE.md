@@ -84,6 +84,30 @@
 - Outcome: Catches data corruption and malicious input without false positives
 - Phase: 02-02
 
+**2026-01-20: Upstash Redis for Serverless Rate Limiting (02-01)**
+- Decision: Use Upstash Redis instead of Vercel KV or Redis Labs
+- Rationale: HTTP-based client works in Next.js Edge runtime, Lambda, and Node.js without persistent connections
+- Outcome: Perfect fit for serverless architecture with no connection pooling needed
+- Phase: 02-01
+
+**2026-01-20: Three-Tier Rate Limiting Strategy (02-01)**
+- Decision: Implement different rate limits for telemetry (7200/hour), mutation (100/hour), and auth (20/15min)
+- Rationale: Different endpoints have different legitimate usage patterns and risk profiles
+- Outcome: Protects resources without impacting legitimate gameplay
+- Phase: 02-01
+
+**2026-01-20: Sliding Window Rate Limiting Algorithm (02-01)**
+- Decision: Use sliding window instead of fixed window or token bucket
+- Rationale: Prevents boundary exploitation (3600 at 00:59, 3600 at 01:00) with negligible overhead
+- Outcome: More accurate rate limiting that can't be gamed
+- Phase: 02-01
+
+**2026-01-20: Enable Upstash Analytics for Rate Limiting (02-01)**
+- Decision: Set analytics: true for all rate limiters
+- Rationale: Track rate limit hits for monitoring and debugging abuse patterns
+- Outcome: Will enable data-driven rate limit tuning in production
+- Phase: 02-01
+
 **2026-01-20: npm install for CI instead of npm ci (01-06)**
 - Decision: Use npm install in GitHub Actions workflow instead of npm ci
 - Rationale: npm ci has mysterious bug in CI where it doesn't recognize valid package-lock.json
@@ -242,6 +266,13 @@
 - hideSourceMaps not valid in Sentry v10 SentryBuildOptions
 - instrumentation.ts required for server/edge runtime initialization
 
+**From Plan Execution (02-01):**
+- Upstash Redis.fromEnv() automatically reads UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN
+- Sliding window algorithm prevents boundary exploitation in rate limiting
+- Different endpoints need different rate limits based on usage patterns (telemetry 7200/hour, mutation 100/hour, auth 20/15min)
+- @radix-ui/react-slot was missing from package.json (required by badge.tsx)
+- Rate limiter should be committed separately but was bundled with 02-03 in practice
+
 **From Plan Execution (01-04):**
 - Tailwind v4 requires CSS variables outside @layer base
 - Tailwind v4 @theme inline directive maps variables to utilities
@@ -287,27 +318,27 @@ None currently.
 
 ## Session Continuity
 
-**Last Session:** 2026-01-20T20:55:05Z
-**Activity:** Executed 02-03-PLAN.md (Sentry Integration)
-**Outcome:** Error monitoring configured for all runtimes with PII sanitization
+**Last Session:** 2026-01-20T20:55:08Z
+**Activity:** Created SUMMARY for 02-01-PLAN.md (Rate Limiting Infrastructure)
+**Outcome:** Documented rate limiting infrastructure completion, verified all tasks complete
 
-**Stopped at:** Completed 02-03-PLAN.md - Production observability ready
+**Stopped at:** Completed 02-01 SUMMARY documentation
 **Resume file:** None
 
 **Next Session:**
-- Goal: Continue Phase 2 security hardening
-- Expected: Complete remaining security plans (rate limiting, error handling, etc.)
-- Note: 3/5 plans complete in Phase 2
+- Goal: Continue Phase 2 security hardening with plans 02-04a and 02-04b
+- Expected: Integrate rate limiting and validation into API routes
+- Note: 3/5 plans complete in Phase 2 (02-01, 02-02, 02-03)
 
 **Context for Handoff:**
-- Sentry v10 installed for Next.js 16 compatibility
-- Error tracking active in client, server, and edge runtimes
-- PII sanitization: api_key/token/secret → [REDACTED] before sending
-- 10% performance sampling, error-only session replay
-- User setup required: Sentry account + environment variables
-- 4 commits made: SDK install, runtime configs, build integration, env docs
+- Rate limiting infrastructure ready (Upstash Redis, three tiers: 7200/hour, 100/hour, 20/15min)
+- Input validation schemas created for all API endpoints (Zod)
+- Sentry error monitoring integrated across all runtimes
+- Plans 02-04a and 02-04b can now integrate these components into API routes
+- User setup required: Upstash Redis account + Sentry account + environment variables
+- Summary created retroactively for 02-01 (tasks already executed in prior session)
 
 ---
 
-*Last updated: 2026-01-20T20:55:05Z*
-*Last plan executed: 02-03-PLAN.md*
+*Last updated: 2026-01-20T20:55:08Z*
+*Last plan executed: 02-01-PLAN.md (SUMMARY created)*
