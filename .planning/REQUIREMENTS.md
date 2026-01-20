@@ -191,6 +191,14 @@ Requirements for complete dashboard redesign and feature completion.
 - [ ] **TEST-09**: CI pipeline runs tests on every commit
 - [ ] **TEST-10**: Test coverage report is generated and reviewed
 
+### Edge Cases
+
+- [ ] **EDGE-01**: User experiences graceful fallback when network disconnects (plugin and dashboard)
+- [ ] **EDGE-02**: User sees automatic polling retry when WebSocket fails
+- [ ] **EDGE-03**: User sees loading states and skeleton screens during data fetch
+- [ ] **EDGE-04**: User sees meaningful empty states for new accounts with no data
+- [ ] **EDGE-05**: User encounters error and sees error boundary preventing full-page crash
+
 ## v2 Requirements
 
 Deferred to future release.
@@ -235,17 +243,166 @@ Deferred to future release.
 
 ## Traceability
 
-Traceability will be populated during roadmap creation.
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (To be filled by roadmapper) | | |
+| DESIGN-01 | Phase 3 | Pending |
+| DESIGN-02 | Phase 3 | Pending |
+| DESIGN-03 | Phase 3 | Pending |
+| DESIGN-04 | Phase 3 | Pending |
+| DESIGN-05 | Phase 3 | Pending |
+| DESIGN-06 | Phase 3 | Pending |
+| DESIGN-07 | Phase 3 | Pending |
+| FIX-01 | Phase 3 | Pending |
+| FIX-02 | Phase 3 | Pending |
+| FIX-03 | Phase 3 | Pending |
+| FIX-04 | Phase 3 | Pending |
+| FIX-05 | Phase 3 | Pending |
+| FIX-06 | Phase 3 | Pending |
+| SEC-01 | Phase 2 | Pending |
+| SEC-02 | Phase 2 | Pending |
+| SEC-03 | Phase 2 | Pending |
+| SEC-04 | Phase 2 | Pending |
+| SEC-05 | Phase 2 | Pending |
+| PERF-01 | Phase 4 | Pending |
+| PERF-02 | Phase 4 | Pending |
+| PERF-03 | Phase 4 | Pending |
+| PERF-04 | Phase 4 | Pending |
+| PERF-05 | Phase 4 | Pending |
+| PERF-06 | Phase 4 | Pending |
+| PERF-07 | Phase 4 | Pending |
+| LIVE-01 | Phase 4 | Pending |
+| LIVE-02 | Phase 4 | Pending |
+| LIVE-03 | Phase 4 | Pending |
+| LIVE-04 | Phase 4 | Pending |
+| LIVE-05 | Phase 4 | Pending |
+| LIVE-06 | Phase 4 | Pending |
+| LIVE-07 | Phase 4 | Pending |
+| LIVE-08 | Phase 4 | Pending |
+| LIVE-09 | Phase 4 | Pending |
+| LIVE-10 | Phase 4 | Pending |
+| LIVE-11 | Phase 4 | Pending |
+| LIVE-12 | Phase 4 | Pending |
+| LIVE-13 | Phase 4 | Pending |
+| LIVE-14 | Phase 4 | Pending |
+| LIVE-15 | Phase 4 | Pending |
+| LIVE-16 | Phase 4 | Pending |
+| JOBS-01 | Phase 5 | Pending |
+| JOBS-02 | Phase 5 | Pending |
+| JOBS-03 | Phase 5 | Pending |
+| JOBS-04 | Phase 5 | Pending |
+| JOBS-05 | Phase 5 | Pending |
+| JOBS-06 | Phase 5 | Pending |
+| JOBS-07 | Phase 5 | Pending |
+| JOBS-08 | Phase 5 | Pending |
+| JOBS-09 | Phase 5 | Pending |
+| JOBS-10 | Phase 5 | Pending |
+| ROUTE-01 | Phase 5 | Pending |
+| ROUTE-02 | Phase 5 | Pending |
+| ROUTE-03 | Phase 5 | Pending |
+| ROUTE-04 | Phase 5 | Pending |
+| ROUTE-05 | Phase 5 | Pending |
+| ROUTE-06 | Phase 5 | Pending |
+| ROUTE-07 | Phase 5 | Pending |
+| ROUTE-08 | Phase 5 | Pending |
+| ROUTE-09 | Phase 5 | Pending |
+| ROUTE-10 | Phase 5 | Pending |
+| ANALYTICS-01 | Phase 5 | Pending |
+| ANALYTICS-02 | Phase 5 | Pending |
+| ANALYTICS-03 | Phase 5 | Pending |
+| ANALYTICS-04 | Phase 5 | Pending |
+| ANALYTICS-05 | Phase 5 | Pending |
+| ANALYTICS-06 | Phase 5 | Pending |
+| ANALYTICS-07 | Phase 5 | Pending |
+| ANALYTICS-08 | Phase 5 | Pending |
+| ANALYTICS-09 | Phase 5 | Pending |
+| ANALYTICS-10 | Phase 5 | Pending |
+| COMPANY-01 | Phase 5 | Pending |
+| COMPANY-02 | Phase 5 | Pending |
+| COMPANY-03 | Phase 5 | Pending |
+| COMPANY-04 | Phase 5 | Pending |
+| COMPANY-05 | Phase 5 | Pending |
+| COMPANY-06 | Phase 5 | Pending |
+| COMPANY-07 | Phase 5 | Pending |
+| COMPANY-08 | Phase 5 | Pending |
+| EXPENSE-01 | Phase 5 | Pending |
+| EXPENSE-02 | Phase 5 | Pending |
+| EXPENSE-03 | Phase 5 | Pending |
+| EXPENSE-04 | Phase 5 | Pending |
+| EXPENSE-05 | Phase 5 | Pending |
+| EXPENSE-06 | Phase 5 | Pending |
+| EXPENSE-07 | Phase 5 | Pending |
+| EXPENSE-08 | Phase 5 | Pending |
+| EXPENSE-09 | Phase 5 | Pending |
+| EXPENSE-10 | Phase 5 | Pending |
+| HOS-01 | Phase 5 | Pending |
+| HOS-02 | Phase 5 | Pending |
+| HOS-03 | Phase 5 | Pending |
+| HOS-04 | Phase 5 | Pending |
+| HOS-05 | Phase 5 | Pending |
+| HOS-06 | Phase 5 | Pending |
+| HOS-07 | Phase 5 | Pending |
+| HOS-08 | Phase 5 | Pending |
+| ACHIEVE-01 | Phase 5 | Pending |
+| ACHIEVE-02 | Phase 5 | Pending |
+| ACHIEVE-03 | Phase 5 | Pending |
+| ACHIEVE-04 | Phase 5 | Pending |
+| ACHIEVE-05 | Phase 5 | Pending |
+| ACHIEVE-06 | Phase 5 | Pending |
+| ACHIEVE-07 | Phase 5 | Pending |
+| ACHIEVE-08 | Phase 5 | Pending |
+| ACHIEVE-09 | Phase 5 | Pending |
+| AI-01 | Phase 6 | Pending |
+| AI-02 | Phase 6 | Pending |
+| AI-03 | Phase 6 | Pending |
+| AI-04 | Phase 6 | Pending |
+| AI-05 | Phase 6 | Pending |
+| AI-06 | Phase 6 | Pending |
+| AI-07 | Phase 6 | Pending |
+| AI-08 | Phase 6 | Pending |
+| AI-09 | Phase 6 | Pending |
+| AI-10 | Phase 6 | Pending |
+| SETTINGS-01 | Phase 6 | Pending |
+| SETTINGS-02 | Phase 6 | Pending |
+| SETTINGS-03 | Phase 6 | Pending |
+| SETTINGS-04 | Phase 6 | Pending |
+| SETTINGS-05 | Phase 6 | Pending |
+| SETTINGS-06 | Phase 6 | Pending |
+| SETTINGS-07 | Phase 6 | Pending |
+| SETTINGS-08 | Phase 6 | Pending |
+| SETTINGS-09 | Phase 6 | Pending |
+| SETTINGS-10 | Phase 6 | Pending |
+| SETTINGS-11 | Phase 6 | Pending |
+| SETTINGS-12 | Phase 6 | Pending |
+| SETTINGS-13 | Phase 6 | Pending |
+| TEST-01 | Phase 1 | Pending |
+| TEST-02 | Phase 1 | Pending |
+| TEST-03 | Phase 1 | Pending |
+| TEST-04 | Phase 1 | Pending |
+| TEST-05 | Phase 1 | Pending |
+| TEST-06 | Phase 1 | Pending |
+| TEST-07 | Phase 1 | Pending |
+| TEST-08 | Phase 1 | Pending |
+| TEST-09 | Phase 1 | Pending |
+| TEST-10 | Phase 1 | Pending |
+| EDGE-01 | Phase 6 | Pending |
+| EDGE-02 | Phase 6 | Pending |
+| EDGE-03 | Phase 6 | Pending |
+| EDGE-04 | Phase 6 | Pending |
+| EDGE-05 | Phase 6 | Pending |
 
 **Coverage:**
 - v1 requirements: 127 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 127 ⚠️
+- Mapped to phases: 127 (100%)
+- Unmapped: 0
+
+**Phase Distribution:**
+- Phase 1 (Foundation & Testing): 10 requirements
+- Phase 2 (Security Hardening): 5 requirements
+- Phase 3 (Design System & Core Fixes): 13 requirements
+- Phase 4 (Real-Time Telemetry & Performance): 23 requirements
+- Phase 5 (Analytics & Page Completion): 66 requirements
+- Phase 6 (AI & Polish): 28 requirements
 
 ---
 *Requirements defined: 2026-01-20*
-*Last updated: 2026-01-20 after initial definition*
+*Last updated: 2026-01-20 with phase traceability*
