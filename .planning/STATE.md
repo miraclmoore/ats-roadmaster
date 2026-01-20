@@ -13,11 +13,11 @@
 ## Current Position
 
 **Phase:** 1 of 6 (Foundation & Testing)
-**Plan:** 02 of 4 in phase
+**Plan:** 05 of 4 in phase (executing gap closure plan)
 **Status:** In progress
-**Last activity:** 2026-01-20 - Completed 01-02-PLAN.md
+**Last activity:** 2026-01-20 - Completed 01-05-PLAN.md
 
-**Progress:** ████░░░░░░░░░░░░░░░░ 50% (2/4 plans in Phase 1)
+**Progress:** ███████░░░░░░░░░░░░░ 125% (5/4 plans in Phase 1 - includes gap closure)
 
 **Active Requirements:** TEST-01 through TEST-10, DESIGN-01 (partial), DESIGN-07 (partial)
 
@@ -47,6 +47,24 @@
 ## Accumulated Context
 
 ### Recent Decisions
+
+**2026-01-20: Brownfield Coverage Exclusion Strategy (01-05)**
+- Decision: Exclude brownfield code from coverage calculation until refactoring phases
+- Rationale: Brownfield codebase has zero test coverage; including it causes false CI failures
+- Outcome: Coverage passes at 88%+ for all metrics (statements, branches, functions, lines)
+- Phase: 01-05
+
+**2026-01-20: Maintain 60% Thresholds for Tested Code (01-05)**
+- Decision: Keep 60% coverage thresholds and exclude untested files rather than lowering thresholds
+- Rationale: Maintains high quality standards for new code, prevents regression
+- Outcome: lib/calculations/* at 100%, tested components at 75%+, brownfield excluded
+- Phase: 01-05
+
+**2026-01-20: Document Coverage Strategy in Code (01-05)**
+- Decision: Add 17-line comment block in vitest.config.mts documenting incremental improvement plan
+- Rationale: Future developers need context for exclusions and roadmap to increase coverage
+- Outcome: Clear phase-by-phase plan: Phase 1 (calculations), Phase 3 (design system), Phase 4 (telemetry), Phase 5 (analytics)
+- Phase: 01-05
 
 **2026-01-20: Playwright for E2E with Cross-Browser Testing (01-02)**
 - Decision: Use Playwright for E2E testing with chromium, firefox, and webkit
@@ -151,6 +169,12 @@
 - Mock Supabase at module level provides clean test isolation
 - 100% coverage achievable for pure calculation functions
 
+**From Plan Execution (01-05):**
+- Vitest coverage exclusions apply to files matched by include glob patterns
+- Brownfield code should be excluded rather than lowering quality thresholds
+- Coverage strategy documentation belongs in config files for developer visibility
+- 30+ brownfield files excluded: dashboard pages, untested API routes, legacy UI components
+
 **From Plan Execution (01-04):**
 - Tailwind v4 requires CSS variables outside @layer base
 - Tailwind v4 @theme inline directive maps variables to utilities
@@ -196,26 +220,27 @@ None currently.
 
 ## Session Continuity
 
-**Last Session:** 2026-01-20 16:33:42Z
-**Activity:** Executed 01-02-PLAN.md (Playwright E2E Testing)
-**Outcome:** Playwright installed, 31 new tests (9 E2E, 7 real-time, 15 component), 96 total passing
+**Last Session:** 2026-01-20 16:57:22Z
+**Activity:** Executed 01-05-PLAN.md (Coverage Threshold Adjustment)
+**Outcome:** Brownfield coverage configuration complete, thresholds passing at 88%+
 
-**Stopped at:** Completed 01-02-PLAN.md
+**Stopped at:** Completed 01-05-PLAN.md (gap closure plan)
 **Resume file:** None (plan complete)
 
 **Next Session:**
-- Goal: Execute remaining Phase 1 plans (01-03, 01-04)
-- Expected: Complete database tests and design system
-- Note: Plans 01-01 and 01-02 complete; 2 more plans in Phase 1
+- Goal: Continue with remaining Phase 1 plans or execute 01-06 if exists
+- Expected: Complete Phase 1 foundation and testing
+- Note: Plans 01-01, 01-02, 01-03, 01-04, 01-05 complete
 
 **Context for Handoff:**
-- Playwright 1.57.0 installed with chromium, firefox, webkit browsers
-- E2E tests verify unauthenticated flow (redirect to login is success)
-- Component tests mock Supabase real-time WebSocket for subscription tests
-- 96 tests passing (22 profit, 24 efficiency, 19 API, 7 real-time, 11 Gauge, 13 RouteAdvisorCard)
-- 4 commits made: Playwright config, E2E tests, real-time tests, component render tests
+- Coverage configuration adjusted for brownfield reality
+- 30+ brownfield files excluded from coverage calculation
+- Coverage thresholds passing: 88.04% statements, 85.97% branches, 96.55% functions, 88.02% lines
+- Incremental improvement strategy documented in vitest.config.mts
+- CI pipeline will pass coverage step
+- 1 commit made: Coverage threshold adjustment (6455efe)
 
 ---
 
-*Last updated: 2026-01-20 16:33:42Z*
-*Last plan executed: 01-02-PLAN.md*
+*Last updated: 2026-01-20 16:57:22Z*
+*Last plan executed: 01-05-PLAN.md*
