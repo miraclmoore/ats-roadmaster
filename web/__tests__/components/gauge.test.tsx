@@ -8,7 +8,7 @@ describe('Gauge Component', () => {
     render(<Gauge value={50} max={100} label="Speed" />);
 
     // Verify component renders without crashing
-    const gauge = screen.getByRole('img', { name: /Speed/i });
+    const gauge = screen.getByLabelText(/Speed: 50.*out of 100/i);
     expect(gauge).toBeInTheDocument();
 
     // Verify label is displayed
@@ -25,7 +25,7 @@ describe('Gauge Component', () => {
     expect(screen.getByText('mph')).toBeInTheDocument();
 
     // Verify aria-valuenow attribute
-    const gauge = screen.getByRole('img');
+    const gauge = screen.getByLabelText(/Speed: 75 mph out of 100 mph/i);
     expect(gauge).toHaveAttribute('aria-valuenow', '75');
     expect(gauge).toHaveAttribute('aria-valuemax', '100');
   });
@@ -38,7 +38,7 @@ describe('Gauge Component', () => {
     expect(screen.getByText('0')).toBeInTheDocument();
 
     // Verify aria attributes for zero state
-    const gauge = screen.getByRole('img');
+    const gauge = screen.getByLabelText(/Fuel: 0 % out of 100 %/i);
     expect(gauge).toHaveAttribute('aria-valuenow', '0');
   });
 
@@ -50,7 +50,7 @@ describe('Gauge Component', () => {
     expect(screen.getByText('100')).toBeInTheDocument();
 
     // Verify full state
-    const gauge = screen.getByRole('img');
+    const gauge = screen.getByRole('img', { hidden: true });
     expect(gauge).toHaveAttribute('aria-valuenow', '100');
     expect(gauge).toHaveAttribute('aria-valuemax', '100');
   });
@@ -63,7 +63,7 @@ describe('Gauge Component', () => {
     expect(screen.getByText(customLabel)).toBeInTheDocument();
 
     // Check accessibility attributes
-    const gauge = screen.getByRole('img');
+    const gauge = screen.getByRole('img', { hidden: true });
     expect(gauge).toHaveAttribute('aria-label', expect.stringContaining(customLabel));
   });
 
@@ -115,7 +115,7 @@ describe('Gauge Component', () => {
     expect(screen.getByText('60')).toBeInTheDocument();
 
     // Verify aria-valuetext includes cruise control information
-    const gauge = screen.getByRole('img');
+    const gauge = screen.getByRole('img', { hidden: true });
     expect(gauge).toHaveAttribute('aria-valuetext', expect.stringContaining('cruise control set to 65'));
   });
 
@@ -127,7 +127,7 @@ describe('Gauge Component', () => {
     expect(screen.getByText('120')).toBeInTheDocument(); // Raw value displayed
 
     // But percentage calculation should be clamped
-    const gauge = screen.getByRole('img');
+    const gauge = screen.getByRole('img', { hidden: true });
     expect(gauge).toHaveAttribute('aria-valuenow', '120');
   });
 
