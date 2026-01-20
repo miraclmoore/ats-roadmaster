@@ -25,6 +25,14 @@ Transform existing working telemetry system from "terrible UI" to professional a
 4. Developer imports shadcn/ui Button, Card, Badge components with automotive theme applied
 5. CI pipeline runs tests automatically on every commit and blocks merge on failure
 
+**Plans:** 4 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Vitest setup + unit tests for profit/efficiency calculations
+- [ ] 01-02-PLAN.md — Playwright setup + E2E test for live telemetry flow
+- [ ] 01-03-PLAN.md — pgTAP database/RLS tests
+- [ ] 01-04-PLAN.md — shadcn/ui initialization + automotive theme + CI pipeline
+
 ---
 
 ### Phase 2: Security Hardening
@@ -40,6 +48,11 @@ Transform existing working telemetry system from "terrible UI" to professional a
 3. Developer views Sentry dashboard and sees real-time error tracking and performance monitoring
 4. API route validates all required fields and returns 400 error for missing user_id before database operation
 5. User's API key follows secure generation pattern (rm_ prefix + 64 hex characters)
+
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (created by /gsd:plan-phase 2)
 
 ---
 
@@ -57,6 +70,11 @@ Transform existing working telemetry system from "terrible UI" to professional a
 4. User views completed job and sees accurate profit calculation (income $2,500 - fuel $180 - damage $45 = profit $2,275)
 5. User sees fuel range calculation showing "285 miles remaining" based on current 60 gallons fuel and 4.75 MPG average
 6. User views job history and sees accurate aggregate metrics (fuel consumed, damage taken, avg speed/RPM)
+
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (created by /gsd:plan-phase 3)
 
 ---
 
@@ -77,6 +95,11 @@ Transform existing working telemetry system from "terrible UI" to professional a
 7. Database queries run efficiently with specific field selection (no SELECT *) and appropriate indexes
 8. Telemetry data older than 30 days is automatically archived or deleted
 
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (created by /gsd:plan-phase 4)
+
 ---
 
 ### Phase 5: Analytics & Page Completion
@@ -95,6 +118,11 @@ Transform existing working telemetry system from "terrible UI" to professional a
 6. User opens HOS page and sees driving time tracking with configurable rest alerts
 7. User opens Achievements page and sees unlock status with progress bars for locked achievements
 8. User navigates between all 10 pages using persistent sidebar with consistent layout and smooth transitions
+
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (created by /gsd:plan-phase 5)
 
 ---
 
@@ -115,13 +143,18 @@ Transform existing working telemetry system from "terrible UI" to professional a
 7. User sees meaningful empty states for new accounts with no data ("Complete your first job to see analytics")
 8. User encounters error and sees error boundary preventing full-page crash with actionable message
 
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (created by /gsd:plan-phase 6)
+
 ---
 
 ## Progress Tracking
 
 | Phase | Requirements | Status | Completion |
 |-------|-------------|--------|------------|
-| 1 - Foundation & Testing | 12 | Pending | 0% |
+| 1 - Foundation & Testing | 12 | Planned | 0% |
 | 2 - Security Hardening | 5 | Pending | 0% |
 | 3 - Design System & Core Fixes | 19 | Pending | 0% |
 | 4 - Real-Time Telemetry & Performance | 23 | Pending | 0% |
