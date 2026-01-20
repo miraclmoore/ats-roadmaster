@@ -17,6 +17,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
 
+      - name: Debug - List web directory
+        run: ls -la web/
+
       - name: Install dependencies
         run: cd web && npm ci
 
