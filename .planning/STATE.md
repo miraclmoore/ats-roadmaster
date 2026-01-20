@@ -13,11 +13,11 @@
 ## Current Position
 
 **Phase:** 2 of 6 (Security Hardening) - IN PROGRESS
-**Plan:** 2 of 5 plans complete (02-01, 02-02)
-**Status:** Input validation complete, continuing security hardening
-**Last activity:** 2026-01-20 - Completed 02-02-PLAN.md (Input Validation)
+**Plan:** 3 of 5 plans complete (02-01, 02-02, 02-03)
+**Status:** Error monitoring integrated, continuing security hardening
+**Last activity:** 2026-01-20 - Completed 02-03-PLAN.md (Sentry Integration)
 
-**Progress:** █████░░░░░░░░░░░░░░░ 40% (Phase 2 of 6, 2/5 plans)
+**Progress:** ██████░░░░░░░░░░░░░░ 60% (Phase 2 of 6, 3/5 plans)
 
 **Active Requirements:** SEC-02 through SEC-05 (remaining)
 
@@ -47,6 +47,24 @@
 ## Accumulated Context
 
 ### Recent Decisions
+
+**2026-01-20: Use Sentry v10 for Next.js 16 compatibility (02-03)**
+- Decision: Install @sentry/nextjs@10.35.0 instead of 8.x
+- Rationale: Sentry v8 doesn't support Next.js 16 (peer dependency conflict), v10 does
+- Outcome: All Sentry features available with Next.js 16
+- Phase: 02-03
+
+**2026-01-20: PII sanitization in beforeSend hook (02-03)**
+- Decision: Scrub api_key, token, secret from all error contexts before sending to Sentry
+- Rationale: Prevent accidental credential leaks in error reports
+- Outcome: Server config sanitizes request data, breadcrumbs, and extra context
+- Phase: 02-03
+
+**2026-01-20: 10% performance sampling for Sentry (02-03)**
+- Decision: Set tracesSampleRate to 0.1 across all runtimes
+- Rationale: Balance observability with Sentry quota/cost
+- Outcome: Performance monitoring enabled without excessive overhead
+- Phase: 02-03
 
 **2026-01-20: Defense-in-depth validation pattern (02-02)**
 - Decision: Implement secondary validation after API key lookup with validateUserOwnsResource
@@ -218,6 +236,12 @@
 - Coverage strategy documentation belongs in config files for developer visibility
 - 30+ brownfield files excluded: dashboard pages, untested API routes, legacy UI components
 
+**From Plan Execution (02-03):**
+- Sentry v8 doesn't support Next.js 16, v10 required
+- TypeScript --skipLibCheck necessary for Next.js node_modules type errors
+- hideSourceMaps not valid in Sentry v10 SentryBuildOptions
+- instrumentation.ts required for server/edge runtime initialization
+
 **From Plan Execution (01-04):**
 - Tailwind v4 requires CSS variables outside @layer base
 - Tailwind v4 @theme inline directive maps variables to utilities
@@ -263,26 +287,27 @@ None currently.
 
 ## Session Continuity
 
-**Last Session:** 2026-01-20T20:54:20Z
-**Activity:** Executed 02-02-PLAN.md (Input Validation)
-**Outcome:** Zod schemas created for all API endpoints, service role key audited
+**Last Session:** 2026-01-20T20:55:05Z
+**Activity:** Executed 02-03-PLAN.md (Sentry Integration)
+**Outcome:** Error monitoring configured for all runtimes with PII sanitization
 
-**Stopped at:** Completed 02-02-PLAN.md - Input validation infrastructure complete
+**Stopped at:** Completed 02-03-PLAN.md - Production observability ready
 **Resume file:** None
 
 **Next Session:**
 - Goal: Continue Phase 2 security hardening
-- Expected: Integrate schemas into API routes, add rate limiting, implement error handling
-- Note: 2/5 plans complete in Phase 2
+- Expected: Complete remaining security plans (rate limiting, error handling, etc.)
+- Note: 3/5 plans complete in Phase 2
 
 **Context for Handoff:**
-- Zod schemas ready for use: telemetrySchema, jobStartSchema, jobCompleteSchema
-- Validation utilities created: validateApiKey, validateUserOwnsResource
-- Service role key confirmed secure (server-side only)
-- Defense-in-depth pattern established for API key authentication
-- 3 commits made: telemetry schema, job schemas, validation utilities
+- Sentry v10 installed for Next.js 16 compatibility
+- Error tracking active in client, server, and edge runtimes
+- PII sanitization: api_key/token/secret → [REDACTED] before sending
+- 10% performance sampling, error-only session replay
+- User setup required: Sentry account + environment variables
+- 4 commits made: SDK install, runtime configs, build integration, env docs
 
 ---
 
-*Last updated: 2026-01-20T20:54:20Z*
-*Last plan executed: 02-02-PLAN.md*
+*Last updated: 2026-01-20T20:55:05Z*
+*Last plan executed: 02-03-PLAN.md*
