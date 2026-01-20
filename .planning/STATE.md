@@ -13,15 +13,15 @@
 ## Current Position
 
 **Phase:** 2 of 6 (Security Hardening) - IN PROGRESS
-**Plan:** 4 of 5 plans complete (02-01, 02-02, 02-03, 02-04a)
-**Status:** API routes secured with layered defense, continuing integration
-**Last activity:** 2026-01-20 - Completed 02-04a-PLAN.md (API Route Security Integration)
+**Plan:** 5 of 5 plans complete (02-01, 02-02, 02-03, 02-04a, 02-04b)
+**Status:** All API routes secured with layered defense, Phase 2 nearing completion
+**Last activity:** 2026-01-20 - Completed 02-04b-PLAN.md (API Security Integration Wave 2)
 
-**Progress:** ████████░░░░░░░░░░░░ 80% (Phase 2 of 6, 4/5 plans)
+**Progress:** █████████░░░░░░░░░░░ 100% (Phase 2 of 6, 5/5 plans - ready for Phase 2 verification)
 
-**Active Requirements:** SEC-02 through SEC-05
+**Active Requirements:** SEC-01 through SEC-04 (complete), SEC-05 (verification pending)
 
-**Next Milestone:** Complete remaining API route security (02-04b, 02-05)
+**Next Milestone:** Phase 2 verification and documentation (02-05 optional), then Phase 3 (UI Redesign)
 
 ---
 
@@ -47,6 +47,18 @@
 ## Accumulated Context
 
 ### Recent Decisions
+
+**2026-01-20: Security event logging for API key regeneration (02-04b)**
+- Decision: Log API key regeneration to Sentry at info level with user ID
+- Rationale: Track security-sensitive operations for audit trail and anomaly detection
+- Outcome: Security team can detect suspicious key regeneration patterns in Sentry
+- Phase: 02-04b
+
+**2026-01-20: Differential rate limiting for GET vs POST preferences (02-04b)**
+- Decision: GET has no rate limit, POST uses authLimiter (20 req/15min)
+- Rationale: Reads are cheap operations that don't modify state, writes need abuse protection
+- Outcome: Dashboard can poll preferences without hitting rate limits, malicious preference updates blocked
+- Phase: 02-04b
 
 **2026-01-20: Validate before rate limiting for fast path rejection (02-04a)**
 - Decision: Apply Zod validation before rate limiting check in API routes
@@ -331,27 +343,27 @@ None currently.
 
 ## Session Continuity
 
-**Last Session:** 2026-01-20T21:00:49Z
-**Activity:** Completed 02-04a-PLAN.md (API Route Security Integration)
-**Outcome:** Secured telemetry and job start endpoints with layered defense
+**Last Session:** 2026-01-20T21:15:11Z
+**Activity:** Completed 02-04b-PLAN.md (API Security Integration Wave 2)
+**Outcome:** Secured job complete, API key regeneration, and preferences endpoints; verified SEC-04 compliance
 
-**Stopped at:** Completed 02-04a execution and SUMMARY
+**Stopped at:** Completed 02-04b execution and SUMMARY
 **Resume file:** None
 
 **Next Session:**
-- Goal: Complete Phase 2 with remaining plans (02-04b, 02-05 if exists)
-- Expected: Secure remaining API routes (jobs/complete, jobs/cancel, preferences, api-key)
-- Note: 4/5 plans complete in Phase 2 (02-01, 02-02, 02-03, 02-04a)
+- Goal: Begin Phase 3 (UI Redesign & Real-time Features)
+- Expected: Design system unification, live telemetry improvements, responsive dashboard
+- Note: Phase 2 complete (5/5 plans), all SEC requirements satisfied
 
 **Context for Handoff:**
-- Security layer pattern established: Parse → Validate → Authenticate → Rate limit → Authorize → Database
-- Telemetry endpoint secured (7200/hour rate limit)
-- Job start endpoint secured (100/hour rate limit)
-- All security components integrated: Zod validation, Upstash rate limiting, Sentry monitoring
-- Plan 02-04b ready to apply same pattern to remaining endpoints
-- No blockers, all dependencies available
+- All Phase 2 API routes secured with layered defense (validation, authentication, rate limiting, error monitoring)
+- Three-tier rate limiting deployed: telemetry (7200/hour), mutation (100/hour), auth (20/15min)
+- SEC-01 through SEC-04 complete, SEC-05 (verification) can be tested in Phase 6
+- API key generation verified SEC-04 compliant (256-bit entropy, server-side only)
+- AI endpoints deferred to Phase 6 as planned
+- Ready for Phase 3 UI work without security concerns
 
 ---
 
-*Last updated: 2026-01-20T21:00:49Z*
-*Last plan executed: 02-04a-PLAN.md*
+*Last updated: 2026-01-20T21:15:11Z*
+*Last plan executed: 02-04b-PLAN.md*
