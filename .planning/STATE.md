@@ -13,11 +13,11 @@
 ## Current Position
 
 **Phase:** 1 of 6 (Foundation & Testing)
-**Plan:** 03 of 4 in phase
+**Plan:** 04 of 4 in phase
 **Status:** In progress
-**Last activity:** 2026-01-20 - Completed 01-03-PLAN.md
+**Last activity:** 2026-01-20 - Completed 01-04-PLAN.md
 
-**Progress:** █████░░░░░░░░░░░░░░░ 25% (1/4 plans in Phase 1)
+**Progress:** ██████░░░░░░░░░░░░░░ 50% (2/4 plans in Phase 1)
 
 **Active Requirements:** TEST-01 through TEST-10, DESIGN-01 (partial), DESIGN-07 (partial)
 
@@ -47,6 +47,24 @@
 ## Accumulated Context
 
 ### Recent Decisions
+
+**2026-01-20: shadcn/ui for Design System (01-04)**
+- Decision: Use shadcn/ui over Tremor or other component libraries
+- Rationale: Copy-paste model provides full control for automotive theming, no version lock-in
+- Outcome: Button/Card/Badge components installed with automotive theme applied
+- Phase: 01-04
+
+**2026-01-20: Tailwind v4 @theme inline Directive (01-04)**
+- Decision: Use hsl() color format with @theme inline directive for Tailwind v4
+- Rationale: Tailwind v4 requirement, enables proper theme variable mapping
+- Outcome: Automotive color palette (amber primary, steel blue secondary, red accent) applied globally
+- Phase: 01-04
+
+**2026-01-20: CI Coverage Reports Always-On (01-04)**
+- Decision: Upload coverage reports on every run (not just failures)
+- Rationale: Track coverage metrics over time, identify trends
+- Outcome: GitHub Actions workflow uploads coverage artifacts with 7-day retention
+- Phase: 01-04
 
 **2026-01-20: Root package.json for Database Tests (01-03)**
 - Decision: Created root-level package.json for test:db scripts
@@ -83,6 +101,12 @@
 - Tremor requires @next tag for React 19 support
 - WebSocket subscriptions must include cleanup functions to prevent memory leaks
 - Throttle real-time updates to 500ms to prevent re-render storms
+
+**From Plan Execution (01-04):**
+- Tailwind v4 requires CSS variables outside @layer base
+- Tailwind v4 @theme inline directive maps variables to utilities
+- GitHub Actions with coverage artifacts enables metric tracking
+- shadcn/ui components use class-variance-authority for variant management
 
 ### Technical Constraints
 
@@ -123,26 +147,26 @@ None currently.
 
 ## Session Continuity
 
-**Last Session:** 2026-01-20 16:29:09Z
-**Activity:** Executed 01-03-PLAN.md (Database Testing Infrastructure)
-**Outcome:** pgTAP testing infrastructure with 54 database tests (schema + RLS)
+**Last Session:** 2026-01-20 16:29:52Z
+**Activity:** Executed 01-04-PLAN.md (shadcn/ui Design System & CI Pipeline)
+**Outcome:** shadcn/ui components installed, automotive theme applied, GitHub Actions CI created
 
-**Stopped at:** Completed 01-03-PLAN.md
+**Stopped at:** Completed 01-04-PLAN.md
 **Resume file:** None (plan complete)
 
 **Next Session:**
-- Goal: Execute remaining Phase 1 plans (01-01, 01-02, 01-04)
-- Expected: Complete testing infrastructure and design system foundation
-- Note: Plan 01-03 complete; 3 more plans in Phase 1
+- Goal: Execute remaining Phase 1 plans (01-01, 01-02)
+- Expected: Complete unit and E2E testing infrastructure
+- Note: Plans 01-03 and 01-04 complete; 2 more plans in Phase 1
 
 **Context for Handoff:**
-- Database testing infrastructure now established (pgTAP with 54 tests)
-- Tests verify schema structure, profit calculation fields, and RLS policies
-- Tests require local Supabase instance (`supabase start`) to run
-- Root package.json created for database test scripts
-- Pattern established: pgTAP tests with BEGIN/ROLLBACK wrapping
+- shadcn/ui Button/Card/Badge components available with automotive theme
+- Tailwind v4 @theme inline directive applied with hsl() colors
+- GitHub Actions CI pipeline created (will run when test scripts added)
+- Database testing infrastructure established (Plan 01-03)
+- 3 commits made: shadcn components, automotive theme, CI pipeline
 
 ---
 
-*Last updated: 2026-01-20 16:29:09Z*
-*Last plan executed: 01-03-PLAN.md*
+*Last updated: 2026-01-20 16:29:52Z*
+*Last plan executed: 01-04-PLAN.md*
