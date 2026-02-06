@@ -3,6 +3,7 @@ import { jobCompleteSchema } from './schema';
 import { mutationLimiter } from '@/lib/ratelimit';
 import { createServiceClient } from '@/lib/supabase/service';
 import { validateApiKey, validateUserOwnsResource } from '@/lib/supabase/validation';
+import { calculateFuelCost, calculateDamageCost, calculateProfitPerMile } from '@/lib/calculations/profit';
 import * as Sentry from '@sentry/nextjs';
 
 export async function POST(req: NextRequest) {
@@ -61,8 +62,33 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
-    // Update job
+    // Fetch original job to get income and distance for calculations
     const supabase = createServiceClient();
+    const { data: originalJob, error: fetchError } = await supabase
+      .from('jobs')
+      .select('income, distance')
+      .eq('id', data.job_id)
+      .single();
+
+    if (fetchError || !originalJob) {
+      Sentry.captureException(fetchError || new Error('Job not found'), {
+        extra: { userId, jobId: data.job_id }
+      });
+      return NextResponse.json({ error: 'Job not found' }, { status: 404 });
+    }
+
+    // Calculate profit metrics
+    const fuelCost = calculateFuelCost(data.fuel_consumed);
+    const damageCost = calculateDamageCost(data.damage_taken);
+    const profit = originalJob.income - fuelCost - damageCost;
+    const profitPerMile = calculateProfitPerMile(profit, originalJob.distance);
+
+    // Calculate fuel economy (MPG)
+    const fuelEconomy = data.fuel_consumed > 0
+      ? originalJob.distance / data.fuel_consumed
+      : 0;
+
+    // Update job with telemetry data and calculated fields
     const { error } = await supabase
       .from('jobs')
       .update({
@@ -73,6 +99,11 @@ export async function POST(req: NextRequest) {
         damage_taken: data.damage_taken,
         avg_speed: data.avg_speed,
         avg_rpm: data.avg_rpm,
+        fuel_cost: fuelCost,
+        damage_cost: damageCost,
+        profit: profit,
+        profit_per_mile: profitPerMile,
+        fuel_economy: fuelEconomy,
       })
       .eq('id', data.job_id);
 

@@ -13,9 +13,9 @@ export interface PageHeaderProps {
 export function PageHeader({ title, description, action, compact = false, status }: PageHeaderProps) {
   if (compact) {
     return (
-      <div className="flex items-center justify-between gap-3 mb-3">
+      <div className="flex items-center justify-between gap-3 mb-4 fade-in-up">
         <div className="flex items-center gap-3">
-          <h1 className="text-lg font-bold text-slate-900 dark:text-white">
+          <h1 className="text-xl font-bold tracking-wide uppercase text-white">
             {title}
           </h1>
           {status}
@@ -26,20 +26,20 @@ export function PageHeader({ title, description, action, compact = false, status
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 mb-4">
-      <div className="px-4 sm:px-6 lg:px-8 py-3">
+    <div className="premium-card border-b border-border mb-5 fade-in-up relative overflow-hidden">
+      <div className="scanlines px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+          <div className="relative z-10">
+            <h1 className="text-3xl font-bold tech-heading mb-1">
               {title}
             </h1>
             {description && (
-              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              <p className="mt-2 text-sm text-muted-foreground font-medium">
                 {description}
               </p>
             )}
           </div>
-          {action && <div>{action}</div>}
+          {action && <div className="relative z-10">{action}</div>}
         </div>
       </div>
     </div>
