@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { PageHeader } from '@/components/layout/page-header';
 import { EmptyState } from '@/components/ui/empty-state';
+import { SafetyScoreBadge } from '@/components/telemetry/safety-score-badge';
 
 export default async function JobsPage() {
   const supabase = await createClient();
@@ -61,6 +62,9 @@ export default async function JobsPage() {
                     Profit
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    Safety
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
                     Status
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
@@ -117,6 +121,13 @@ export default async function JobsPage() {
                         <div className={`text-lg font-bold metric-value ${job.profit > 0 ? 'text-[rgb(var(--profit))]' : 'text-[rgb(var(--damage))]'}`}>
                           {job.profit > 0 ? '+' : ''}${Math.round(job.profit).toLocaleString()}
                         </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">-</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      {job.completed_at ? (
+                        <SafetyScoreBadge score={job.safety_score} size="sm" showStar={false} />
                       ) : (
                         <span className="text-sm text-muted-foreground">-</span>
                       )}

@@ -15,6 +15,7 @@ interface Job {
   profit: number;
   distance: number;
   fuel_economy: number;
+  safety_score: number;
   completed_at: string;
 }
 
@@ -84,6 +85,15 @@ export default function AnalyticsPage() {
     income: job.income,
     profit: job.profit || 0,
   }));
+
+  // Safety score trend data
+  const safetyScoreData = jobs
+    .filter(job => job.safety_score !== null && job.safety_score !== undefined)
+    .slice(-10)
+    .map((job) => ({
+      date: new Date(job.completed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      score: Math.round(job.safety_score),
+    }));
 
   // Cargo type profitability
   const cargoStats = jobs.reduce((acc: any, job) => {
@@ -160,6 +170,63 @@ export default function AnalyticsPage() {
         </ResponsiveContainer>
       </div>
 
+      {/* Safety Score Trend Chart */}
+      {safetyScoreData.length > 0 && (
+        <div className="bg-card rounded-lg border-2 border-border p-8 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
+
+          <h3 className="text-xl font-bold text-foreground mb-6 uppercase tracking-wide">
+            Driver Safety Score Trend
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={safetyScoreData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgb(61, 68, 77)" opacity={0.3} />
+              <XAxis dataKey="date" stroke="rgb(148, 163, 184)" style={{ fontSize: '12px' }} />
+              <YAxis
+                domain={[0, 100]}
+                ticks={[0, 20, 40, 60, 80, 100]}
+                stroke="rgb(148, 163, 184)"
+                style={{ fontSize: '12px' }}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'rgb(37, 42, 49)',
+                  border: '1px solid rgb(61, 68, 77)',
+                  borderRadius: '8px',
+                  color: 'rgb(240, 244, 248)',
+                }}
+              />
+              <Legend wrapperStyle={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase' }} />
+              <Line
+                type="monotone"
+                dataKey="score"
+                stroke="rgb(255, 149, 0)"
+                strokeWidth={3}
+                name="Safety Score"
+                dot={{ fill: 'rgb(255, 149, 0)', r: 4 }}
+              />
+              {/* Reference lines for score thresholds */}
+              <line y1={90} y2={90} stroke="rgb(52, 199, 89)" strokeDasharray="5 5" opacity={0.3} />
+              <line y1={70} y2={70} stroke="rgb(255, 149, 0)" strokeDasharray="5 5" opacity={0.3} />
+            </LineChart>
+          </ResponsiveContainer>
+          <div className="mt-4 flex items-center justify-center gap-6 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-[rgb(var(--profit))]" />
+              <span>90-100: Excellent</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-[rgb(var(--fuel))]" />
+              <span>70-89: Good</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-[rgb(var(--damage))]" />
+              <span>0-69: Needs Improvement</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Cargo Type Profitability */}
         <div className="bg-card rounded-lg border-2 border-border p-8 relative overflow-hidden">
@@ -217,7 +284,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-card border-2 border-primary rounded-lg p-6 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
           <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
@@ -252,6 +319,38 @@ export default function AnalyticsPage() {
                 ).toFixed(1)
               : '—'}
             <span className="text-lg text-muted-foreground ml-2">mpg</span>
+          </p>
+        </div>
+
+        <div className="bg-card border-2 border-primary rounded-lg p-6 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
+          <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
+            Avg Safety Score
+          </h4>
+          <p className={`text-4xl font-bold metric-value ${
+            jobs.some(j => j.safety_score)
+              ? jobs.filter(j => j.safety_score).reduce((sum, job) => sum + (job.safety_score || 0), 0) /
+                jobs.filter(j => j.safety_score).length >= 90
+                ? 'text-[rgb(var(--profit))]'
+                : jobs.filter(j => j.safety_score).reduce((sum, job) => sum + (job.safety_score || 0), 0) /
+                  jobs.filter(j => j.safety_score).length >= 70
+                ? 'text-[rgb(var(--fuel))]'
+                : 'text-[rgb(var(--damage))]'
+              : 'text-muted-foreground'
+          }`}>
+            {jobs.some(j => j.safety_score)
+              ? Math.round(
+                  jobs.filter(j => j.safety_score).reduce((sum, job) => sum + (job.safety_score || 0), 0) /
+                  jobs.filter(j => j.safety_score).length
+                )
+              : '—'}
+            {jobs.some(j => j.safety_score) &&
+              Math.round(
+                jobs.filter(j => j.safety_score).reduce((sum, job) => sum + (job.safety_score || 0), 0) /
+                jobs.filter(j => j.safety_score).length
+              ) >= 90 && (
+                <span className="text-lg ml-2">⭐</span>
+              )}
           </p>
         </div>
       </div>
